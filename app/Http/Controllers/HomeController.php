@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\BloodInventory;
 use App\Models\BloodBank;
 use App\Models\BloodRequest;
 use App\Models\User;
+use App\Models\Withdrawal;
 
 class HomeController extends Controller
 {
@@ -48,6 +50,19 @@ class HomeController extends Controller
         }
         // return [$chartData];
         return view('home', compact('chartData', 'typeLabels', 'totalInventory', 'pendingRequests','banks','requests','totalUsers'));
+    }
+    public function report(){
+        $bags = BloodInventory::whereIn('status', ['available', 'tested', 'not_tested'])->get();
+        $withdrawals = Withdrawal::where('status', 'withdrawn')->with('user','bloodbag','bank')->get();
+        $activities=Activity::orderBy('created_at', 'desc')->take(10)->with('user')->get();
+        if(request()->is('api/*')){
+            return response()->json([
+                'bags'=>$bags,
+                'withdrawals'=>$withdrawals,
+                'activities'=>$activities
+            ]);
+        }
+        return view('report', compact('bags', 'withdrawals','activities'));
     }
     
 }
