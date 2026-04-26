@@ -51,7 +51,7 @@ class WithdrawalController extends Controller
             $bag->update();
             Activity::create([
                 'user_id' => Auth::id(),
-                'activity' => 'Requested withdrawal of blood bag with DIN: '.$bag->din
+                'description' => 'Requested withdrawal of blood bag with DIN: '.$bag->din
             ]);
             BagTimeline::create([
                 'bag_id' => $bag->id,
