@@ -82,7 +82,7 @@ class BloodRequestController extends Controller
     {
         $validated=request()->validate([
             'request_type' => 'nullable|in:component,whole_blood',
-            'blood_type' => 'nullable|in:A-,A+,B-,B+,AB-,AB+,O-,O+',
+            'blood_type' => 'nullable|in:A-,A+,B-,B+,AB-,AB+,O-,O+,whole_blood,prbc,platelets,plasma,cryoprecipitate',
             'quantity' => 'nullable|integer|min:1',
             'hospital' => 'nullable|string',
             'contact_phone' => 'nullable|string',
