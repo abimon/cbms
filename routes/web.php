@@ -13,11 +13,11 @@ Route::group(['middleware' => ['web']], function () {
         return view('welcome');
     });
 
-    Route::get('/dashboard', function () {
-        return redirect('/home');
+    Route::get('/home', function () {
+        return redirect('/dashboard');
     });
 
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
     Route::middleware('auth')->group(function () {
         // Blood Inventory
