@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\BagTimeline;
 use App\Models\BloodInventory;
+use App\Models\BloodRequest;
 use App\Models\Withdrawal;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,11 +42,19 @@ class WithdrawalController extends Controller
     {
         try {
             $bag = BloodInventory::where('din',request('din'))->firstOrFail();
-            Withdrawal::create([
+            $Withdrawal=Withdrawal::create([
                 'user_id' => Auth::id(),
                 'bloodbag_id' => $bag->id,
                 'status' => 'requested',
                 'bank_id' => request('bank_id')
+            ]);
+            BloodRequest::create([
+                'blood_type'=>$bag->blood_type,
+                'quantity'=>$bag->volume,
+                'hospital'=> $Withdrawal->bank->name,
+                'contact_phone'=>Auth::user()->phone,
+                'reason'=>$bag->blood_type,
+                'request_date'=>now()
             ]);
             $bag->status = 'requested';
             $bag->update();
