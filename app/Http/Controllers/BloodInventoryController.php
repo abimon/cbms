@@ -31,9 +31,19 @@ class BloodInventoryController extends Controller
     {
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
+
+        $status = ['available', 'tested', 'not_tested'];
         foreach ($bloodgroups as $bloodgroup) {
-            $neg = ['group' => $bloodgroup . '-', 'units' => BloodInventory::where([['blood_type', $bloodgroup], ['status', 'tested'], ['rhesus', 'Negative']])->sum('volume')];
-            $pos = ['group' => $bloodgroup . '+', 'units' => BloodInventory::where([['blood_type', $bloodgroup], ['status', 'tested'], ['rhesus', 'Positive']])->sum('volume')];
+            $blood = BloodInventory::where('blood_type', $bloodgroup)->get();
+            foreach ($blood as $bag) {
+                if (in_array($bag->status, $status)) {
+                    if ($bag->rhesus == 'Negative') {
+                        $neg += $bag->volume;
+                    } else if ($bag->rhesus == 'Positive') {
+                        $pos += $bag->volume;
+                    }
+                }
+            }
             array_push($data, $neg);
             array_push($data, $pos);
         }
@@ -98,7 +108,7 @@ class BloodInventoryController extends Controller
                 }
                 return back()->withErrors($val)->withInput();
             }
-            $user =User_bank::where([['user_id', Auth::id()],['bank_id', BloodBank::where('name', request('collection_agency'))->first()->id]])->firstOrFail();
+            $user =User_bank::where([['user_id', Auth::id()],['bank_id', BloodBank::where('name', request('collection_agency'))->first()->id],['status', 'approved']])->firstOrFail();
             if(!$user){
                 if (request()->is('api/*')) {
                     return response()->json(['message' => 'You are not associated to this collection agency'], 404);

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('bank_id')->constrained('blood_banks')->cascadeOnDelete();
             $table->string('role')->default('agent');
+            $table->enum('status', ['approved', 'rejected', 'pending'])->default('pending');
             $table->timestamps();
         });
     }
