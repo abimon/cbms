@@ -7,8 +7,8 @@
             <p class="text-muted mb-0">View the hospital blood request and change status.</p>
         </div>
         <div class="d-flex gap-2">
-            <a href="{{ route('blood-requests.index') }}" class="btn btn-outline-secondary btn-sm">Back</a>
-            <a href="{{ route('blood-requests.edit', $bloodRequest) }}" class="btn btn-primary btn-sm">Edit request</a>
+            <a href="{{ route('requests.index') }}" class="btn btn-outline-secondary btn-sm">Back</a>
+            <a href="{{ route('requests.edit', $bloodRequest) }}" class="btn btn-primary btn-sm">Edit request</a>
         </div>
     </div>
 
