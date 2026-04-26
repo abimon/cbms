@@ -16,7 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resources([
         'blood-inventories' => BloodInventoryController::class,
         'blood_banks'=>BloodBankController::class,
-        'withdrawal'=>WithdrawalController::class,
+        'blood-withdrawals'=>WithdrawalController::class,
         'blood-storage'=>BloodStorageController::class,
         'blood-request'=>BloodRequestController::class
     ]);
