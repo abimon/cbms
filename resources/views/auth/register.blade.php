@@ -11,7 +11,6 @@
         <div class="auth-body">
             <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
                 @csrf
-
                 @if(session('message'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ session('message') }}
@@ -54,6 +53,21 @@
                             placeholder="Enter your phone number">
                     </div>
                     @error('phone')
+                    <div class="text-danger small mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="bank_id" class="form-label">Blood Bank/ Collection Agency</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-building"></i></span>
+                        <select id="bank_id" name="bank_id" class="form-select @error('bank_id') is-invalid @enderror" required>
+                            <option value="" disabled selected>Select your blood bank/ collection agency</option>
+                            @foreach($banks as $bank)
+                            <option value="{{ $bank->id }}" {{ old('bank_id') == $bank->id ? 'selected' : '' }}>{{ $bank->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('bank_id')
                     <div class="text-danger small mt-1">{{ $message }}</div>
                     @enderror
                 </div>

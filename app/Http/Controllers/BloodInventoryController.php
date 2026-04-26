@@ -7,6 +7,7 @@ use App\Models\BagTimeline;
 use App\Models\BloodInventory;
 use App\Models\BloodBank;
 use App\Models\BloodStorage;
+use App\Models\User_bank;
 use Illuminate\Support\Facades\Auth;
 
 class BloodInventoryController extends Controller
@@ -59,63 +60,77 @@ class BloodInventoryController extends Controller
      */
     public function store()
     {
-        // if a scan payload was submitted, try to decode and merge it so normal validation can apply
-        if (request()->filled('scan_data')) {
-            $payload = request()->input('scan_data');
-            // assume JSON, but be tolerant of simple key=value pairs if required
-            try {
-                $decoded = json_decode($payload, true);
-                if (is_array($decoded)) {
-                    request()->merge($decoded);
-                }
-            } catch (\Throwable $e) {
-                // ignore, will validate using whatever fields are present
-            }
-        }
+        try {
 
-        $val = request()->validate([
-            'din' => 'required|string|max:255|unique:blood_inventories,din',
-            'type' => 'required|string',
-            'volume' => 'required|string',
-            'blood_type' => 'required|string|in:A,B,AB,O,NT',
-            'rhesus' => 'required|string|in:Positive,Negative,NT',
-            'date_collected' => 'required|date',
-            'location' => 'required|string',
-            'collection_agency' => 'required|string',
-            'HIV' => 'required|in:Negative,Positive,NT',
-            'HCV' => 'required|in:Negative,Positive,NT',
-            'HBV' => 'required|in:Negative,Positive,NT',
-            'Syphilis' => 'required|in:Negative,Positive,NT',
-            'Malaria' => 'required|in:Negative,Positive,NT',
-            'status' => 'nullable|in:tested,not_tested,available,used,expired',
-        ]);
-        if (!$val) {
-            if (request()->is('api/*')) {
-                return response()->json(['message' => 'Validation failed', 'errors' => $val], 400);
+            // if a scan payload was submitted, try to decode and merge it so normal validation can apply
+            if (request()->filled('scan_data')) {
+                $payload = request()->input('scan_data');
+                // assume JSON, but be tolerant of simple key=value pairs if required
+                try {
+                    $decoded = json_decode($payload, true);
+                    if (is_array($decoded)) {
+                        request()->merge($decoded);
+                    }
+                } catch (\Throwable $e) {
+                    // ignore, will validate using whatever fields are present
+                }
             }
-            return back()->withErrors($val)->withInput();
+
+            $val = request()->validate([
+                'din' => 'required|string|max:255|unique:blood_inventories,din',
+                'type' => 'required|string',
+                'volume' => 'required|string',
+                'blood_type' => 'required|string|in:A,B,AB,O,NT',
+                'rhesus' => 'required|string|in:Positive,Negative,NT',
+                'date_collected' => 'required|date',
+                'location' => 'required|string',
+                'collection_agency' => 'required|string',
+                'HIV' => 'required|in:Negative,Positive,NT',
+                'HCV' => 'required|in:Negative,Positive,NT',
+                'HBV' => 'required|in:Negative,Positive,NT',
+                'Syphilis' => 'required|in:Negative,Positive,NT',
+                'Malaria' => 'required|in:Negative,Positive,NT',
+                'status' => 'nullable|in:tested,not_tested,available,used,expired',
+            ]);
+            if (!$val) {
+                if (request()->is('api/*')) {
+                    return response()->json(['message' => 'Validation failed', 'errors' => $val], 400);
+                }
+                return back()->withErrors($val)->withInput();
+            }
+            $user =User_bank::where([['user_id', Auth::id()],['bank_id', BloodBank::where('name', request('collection_agency'))->first()->id]])->firstOrFail();
+            if(!$user){
+                if (request()->is('api/*')) {
+                    return response()->json(['message' => 'You are not associated to this collection agency'], 404);
+                }
+                return redirect()->route('blood-inventories.index')->with('error', 'You are not associated to this collection agency.');
+            }
+            // add 35 days to date collected
+            $val['expiry_date'] = date('Y-m-d', strtotime($val['date_collected'] . ' + 35 days'));
+            $val['status'] = request('status') ?? 'not_tested';
+            $inv = BloodInventory::create($val);
+            BloodStorage::create([
+                'bloodbag_id' => $inv->id,
+                'bank_id' => BloodBank::where('name', $inv->collection_agency)->first()->id
+            ]);
+            BagTimeline::create([
+                'bag_id' => $inv->id,
+                'user_id' => Auth::id(),
+                'description' => 'Blood bag created and stored in ' . $inv->collection_agency
+            ]);
+            if (request()->is('api/*')) {
+                return response()->json([
+                    'message' => 'Blood inventory created successfully',
+                    'status' => 'success',
+                ], 201);
+            }
+            return redirect()->route('blood-inventories.index')->with('success', 'Blood inventory created successfully.');
+        } catch (\Throwable $th) {
+            if (request()->is('api/*')) {
+                return response()->json(['message' => $th->getMessage()], 500);
+            }
+            return redirect()->back()->with('error', $th->getMessage())->withInput();
         }
-        // 
-        // add 35 days to date collected
-        $val['expiry_date'] = date('Y-m-d', strtotime($val['date_collected'] . ' + 35 days'));
-        $val['status'] = request('status') ?? 'not_tested';
-        $inv = BloodInventory::create($val);
-        BloodStorage::create([
-            'bloodbag_id' => $inv->id,
-            'bank_id' => BloodBank::where('name', $inv->collection_agency)->first()->id
-        ]);
-        BagTimeline::create([
-            'bag_id' => $inv->id,
-            'user_id' => Auth::id(),
-            'description' => 'Blood bag created and stored in ' . $inv->collection_agency
-        ]);
-        if (request()->is('api/*')) {
-            return response()->json([
-                'message' => 'Blood inventory created successfully',
-                'status' => 'success',
-            ], 201);
-        }
-        return redirect()->route('blood-inventories.index')->with('success', 'Blood inventory created successfully.');
     }
 
     /**
