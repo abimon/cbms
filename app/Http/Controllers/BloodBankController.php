@@ -15,16 +15,23 @@ class BloodBankController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->role=='SuperAdmin'){
+        if (Auth::user()->role == 'SuperAdmin') {
             $banks = BloodBank::paginate(25);
-        }else{
+        } else {
             $ids = Auth::user()->blood_banks->pluck('bank_id')->toArray();
-            $banks = BloodBank::whereIn('id',$ids)->paginate(25);
+            $banks = BloodBank::whereIn('id', $ids)->paginate(25);
         }
-        if(request()->is('api/*')){
-            return response()->json($banks);
+        if (request()->is('api/*')) {
+            $_banks = [];
+            foreach ($banks as $bank) {
+                array_push($_banks, [
+                    'id' => $bank->id,
+                    'name' => $bank->name
+                ]);
+            }
+            return response()->json(['_banks'=>$_banks,'banks'=>$banks]);
         }
-        return view('bloodBank.index',compact('banks'));
+        return view('bloodBank.index', compact('banks'));
     }
 
     /**
@@ -42,28 +49,28 @@ class BloodBankController extends Controller
     {
         try {
             $validate = request()->validate([
-                'name'=>'required|unique:blood_banks',
-                'contact_person'=>'required',
-                'location'=>'required',
-                'contact_phone'=>'required',
-                'email'=>'required|email|unique:blood_banks'
+                'name' => 'required|unique:blood_banks',
+                'contact_person' => 'required',
+                'location' => 'required',
+                'contact_phone' => 'required',
+                'email' => 'required|email|unique:blood_banks'
             ]);
-            $bank=BloodBank::create($validate);
-            
-            if(Auth::user()->role=='Admin'){
+            $bank = BloodBank::create($validate);
+
+            if (Auth::user()->role == 'Admin') {
                 User_bank::create([
-                    'user_id'=>Auth::user()->id,
-                    'bank_id'=>$bank->id
+                    'user_id' => Auth::user()->id,
+                    'bank_id' => $bank->id
                 ]);
             }
             Activity::create([
-                'user_id'=>Auth::user()->id,
-                'description'=>'Added New Blood Bank '.$bank->name
+                'user_id' => Auth::user()->id,
+                'description' => 'Added New Blood Bank ' . $bank->name
             ]);
-            if(request()->is('api/*')){
-                return response()->json(['message'=>'Blood Bank Added Successfully']);
+            if (request()->is('api/*')) {
+                return response()->json(['message' => 'Blood Bank Added Successfully']);
             }
-            return redirect()->back()->with('success','Blood Bank Added Successfully');
+            return redirect()->back()->with('success', 'Blood Bank Added Successfully');
         } catch (\Throwable $th) {
             return $th->getMessage();
         }

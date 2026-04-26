@@ -44,7 +44,8 @@ class WithdrawalController extends Controller
             Withdrawal::create([
                 'user_id' => Auth::id(),
                 'bloodbag_id' => $bag->id,
-                'status' => 'requested'
+                'status' => 'requested',
+                'bank_id' => request('bank_id')
             ]);
             $bag->status = 'withdrawn';
             $bag->update();
