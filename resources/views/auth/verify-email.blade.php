@@ -17,7 +17,7 @@
         <div class="auth-body">
             <form class="d-inline" method="POST" action="{{ route('verification.send') }}">
                 @csrf
-                <button type="submit" class="btn btn-secondary p-0 m-0 align-baseline">{{ __('click here to request another') }}</button>.
+                <button type="submit" class="btn btn-success p-2 m-0 align-baseline">{{ __('click here to request another') }}</button>.
             </form>
         </div>
     </div>
