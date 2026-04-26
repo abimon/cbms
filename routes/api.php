@@ -16,10 +16,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resources([
         'blood-inventories' => BloodInventoryController::class,
         'blood_banks'=>BloodBankController::class,
-        'blood-withdrawals'=>WithdrawalController::class,
         'blood-storage'=>BloodStorageController::class,
         'blood-request'=>BloodRequestController::class
     ]);
+});
+Route::controller(WithdrawalController::class)->prefix('blood-withdrawals/')->group(function () {
+    Route::get('/', 'index');
+    Route::post('/store', 'store');
+    Route::get('/{id}/edit', 'edit');
+    Route::put('/{id}/update', 'update');
+    Route::delete('/{id}/delete', 'destroy');
+    Route::get('/{id}/show', 'show');
 });
 // use auth routes for API
 Route::controller(UserController::class)->group(function () {
