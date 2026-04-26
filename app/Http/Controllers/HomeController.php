@@ -53,8 +53,19 @@ class HomeController extends Controller
     }
     public function report(){
         $bags = BloodInventory::whereIn('status', ['available', 'tested', 'not_tested'])->get();
-        $withdrawals = Withdrawal::where('status', 'withdrawn')->with('user','bloodbag','bank')->get();
-        $activities=Activity::orderBy('created_at', 'desc')->take(10)->with('user')->get();
+        $withdrawals = Withdrawal::where('status', 'withdrawn')->get();
+        $activities=Activity::orderBy('created_at', 'desc')->take(10)->get();
+        foreach($activities as $activity){
+            $activity->user_name = $activity->user ? $activity->user->name : 'Unknown';
+        }
+        foreach($withdrawals as $withdrawal){
+            $withdrawal->user_name = $withdrawal->user ? $withdrawal->user->name : 'Unknown';
+            $withdrawal->din = $withdrawal->bloodbag ? $withdrawal->bloodbag->din : 'Unknown';
+            $withdrawal->bank_name = $withdrawal->bank ? $withdrawal->bank->name : 'Unknown';
+        }
+        foreach($bags as $bag){
+            $bag->bank_name = $bag->bank ? $bag->bank->name : 'Unknown';
+        }
         if(request()->is('api/*')){
             return response()->json([
                 'bags'=>$bags,
