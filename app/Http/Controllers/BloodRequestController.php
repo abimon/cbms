@@ -31,6 +31,7 @@ class BloodRequestController extends Controller
     public function store(Request $request)
     {
         $validated= request()->validate([
+            'request_type' => 'required|in:component,whole_blood',
             'blood_type' => 'required|in:A-,A+,B-,B+,AB-,AB+,O-,O+',
             'quantity' => 'required|integer|min:1',
             'hospital' => 'required|string',
@@ -75,6 +76,7 @@ class BloodRequestController extends Controller
     public function update(Request $request, BloodRequest $bloodRequest)
     {
         $validated=request()->validate([
+            'request_type' => 'nullable|in:component,whole_blood',
             'blood_type' => 'nullable|in:A-,A+,B-,B+,AB-,AB+,O-,O+',
             'quantity' => 'nullable|integer|min:1',
             'hospital' => 'nullable|string',

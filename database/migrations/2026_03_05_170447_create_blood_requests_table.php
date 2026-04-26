@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('blood_requests', function (Blueprint $table) {
             $table->id();
+            $table->enum('request_type', ['component', 'whole_blood'])->default('whole_blood');
             $table->enum('blood_type',['A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+']);
             $table->integer('quantity');
             $table->string('hospital');
