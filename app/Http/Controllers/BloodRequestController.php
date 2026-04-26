@@ -11,8 +11,13 @@ class BloodRequestController extends Controller
      */
     public function index()
     {
-        $bloodRequests = BloodRequest::with('bloodType')->paginate(25);
-        return view('blood_requests.index', compact('bloodRequests'));
+        if(request()->is('api/*')){
+            $requests = BloodRequest::all();
+            return response()->json(['data' => $requests]);
+        }else{
+            $requests = BloodRequest::paginate(10);
+            return view('blood_requests.index', compact('requests'));
+        }
     }
 
     /**
