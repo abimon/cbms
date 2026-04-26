@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
+use App\Models\BagTimeline;
+use App\Models\BloodInventory;
 use App\Models\Withdrawal;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WithdrawalController extends Controller
@@ -38,13 +40,25 @@ class WithdrawalController extends Controller
     public function store()
     {
         try {
+            $bag = BloodInventory::where('din',request('din'))->firstOrFail();
             Withdrawal::create([
                 'user_id' => Auth::id(),
-                'bloodbag_id' => request('bloodbag_id'),
+                'bloodbag_id' => $bag->id,
                 'status' => 'requested'
             ]);
+            $bag->status = 'withdrawn';
+            $bag->update();
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => 'Requested withdrawal of blood bag with DIN: '.$bag->din
+            ]);
+            BagTimeline::create([
+                'bag_id' => $bag->id,
+                'user_id' => Auth::id(),
+                'description' => 'Blood bag withdraw requested by '.Auth::user()->name
+            ]);
             if (request()->is('api/*')) {
-                return response()->json(['message' => 'Withdrawal Requested Successfully']);
+                return response()->json(['message' => 'Withdrawal Requested Successfully'],201);
             }
             return redirect()->back()->with('success', 'Withdrawal Requested Successfully');
         } catch (\Throwable $th) {
@@ -58,9 +72,10 @@ class WithdrawalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Withdrawal $withdrawal)
+    public function show($id)
     {
-        //
+        $withdrawal = Withdrawal::findOrFail($id);
+        return view('admin.withdrawals.show', compact('withdrawal'));
     }
 
     /**
@@ -74,9 +89,33 @@ class WithdrawalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Withdrawal $withdrawal)
+    public function update($id)
     {
-        //
+        try{
+            $withdrawal = Withdrawal::findOrFail($id);
+            
+            $withdrawal->update([
+                'status' => request('status')
+            ]);
+            Activity::create([
+                'user_id' => Auth::id(),
+                'activity' => ucfirst(request('status')).'ed withdrawal of blood bag with DIN: ' . $withdrawal->bloodbag->din
+            ]);
+            BagTimeline::create([
+                'bag_id' => $withdrawal->bloodbag_id,
+                'user_id' => Auth::id(),
+                'description' => 'Blood bag withdraw ' .request('status').' by ' . Auth::user()->name
+            ]);
+            if(request()->is('api/*')) {
+                return response()->json(['message' => 'Withdrawal '.request('status').' Successfully']);
+            }
+            return redirect()->back()->with('success', 'Withdrawal '.request('status').' Successfully');
+        }catch (\Throwable $th) {
+            if (request()->is('api/*')) {
+                return response()->json(['message' => $th->getMessage()]);
+            }
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     /**
