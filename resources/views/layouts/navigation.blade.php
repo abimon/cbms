@@ -19,7 +19,7 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
-                        
+
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -54,7 +54,7 @@
                 <a class="nav-link {{ request()->path()=='dashboard'?'active':'' }}" href="{{ route('dashboard') }}">Dashboard</a>
             </li>
             <div class="sidebar-section">
-                <h6 class="sidebar-section-title">Management</h6>
+                <h6 class="sidebar-section-title">Blood Management</h6>
             </div>
             <li class="nav-item">
                 <a class="nav-link {{ request()->path()=='banks/*'?'active':'' }}" href="{{ route('banks.index') }}">Blood Banks</a>
@@ -68,6 +68,12 @@
             <li class="nav-item">
                 <a class="nav-link {{ request()->path()=='withdrawals/
                 *'?'active':'' }}" href="{{ route('withdrawals.index') }}">Withdrawals</a>
+            </li>
+            <div class="sidebar-section">
+                <h6 class="sidebar-section-title">User Management</h6>
+            </div>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->path()=='users/*'?'active':'' }}" href="{{ route('users.index') }}">Users</a>
             </li>
         </ul>
     </div>
