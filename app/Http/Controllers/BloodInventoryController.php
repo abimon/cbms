@@ -51,11 +51,7 @@ class BloodInventoryController extends Controller
         }
         $nt = BloodInventory::where('blood_type', 'NT')->sum('volume');
         array_push($data, ['group' => 'NT', 'units' => $nt]);
-        if (request()->is('api/*')) {
             return response()->json(['data' => $data]);
-        }
-
-        return view('dashboard', compact('data'));
     }
 
     /**
