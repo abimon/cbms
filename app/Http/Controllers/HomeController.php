@@ -18,10 +18,10 @@ class HomeController extends Controller
         $bloodTypes = ['A', 'B', 'AB', 'O', 'NT'];
         $chartData = [];
        $status = ['available', 'tested', 'not_tested'];
-       $quantity=0;
         foreach ($banks as $bank) {
             $bankData = ['label' => $bank->name, 'data' => []];
             foreach ($bloodTypes as $type) {
+                $quantity = 0;
                 $blood = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type]])->get();
                 foreach ($blood as $bag) {
                     if (in_array($bag->status, $status)) {
