@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\BloodRequest;
-use Illuminate\Http\Request;
 
 class BloodRequestController extends Controller
 {
@@ -28,7 +27,7 @@ class BloodRequestController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store()
     {
         $validated= request()->validate([
             'request_type' => 'required|in:component,whole_blood',
@@ -37,7 +36,6 @@ class BloodRequestController extends Controller
             'hospital' => 'required|string',
             'contact_phone' => 'required|string',
             'reason' => 'nullable|string',
-            'status' => 'required|in:pending,approved,fulfilled,rejected',
         ]);
 
         BloodRequest::create($validated);
@@ -52,8 +50,9 @@ class BloodRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(BloodRequest $bloodRequest)
+    public function show($id)
     {
+        $bloodRequest = BloodRequest::findOrFail($id);
         if(request()->is('api/*')){
             return response()->json($bloodRequest);
         }else{
@@ -64,8 +63,9 @@ class BloodRequestController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(BloodRequest $bloodRequest)
+    public function edit($id)
     {
+        $bloodRequest = BloodRequest::findOrFail($id);
         $bloodTypes = ['A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+'];
         return view('blood_requests.edit', compact('bloodRequest', 'bloodTypes'));
     }
@@ -73,7 +73,7 @@ class BloodRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, BloodRequest $bloodRequest)
+    public function update(BloodRequest $bloodRequest)
     {
         $validated=request()->validate([
             'request_type' => 'nullable|in:component,whole_blood',
@@ -103,9 +103,9 @@ class BloodRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BloodRequest $bloodRequest)
+    public function destroy($id)
     {
-        $bloodRequest->delete();
+        BloodRequest::destroy($id);
         if(request()->is('api/*')){
             return response()->json(['message' => 'Blood request deleted successfully.'], 200);
         }else{
