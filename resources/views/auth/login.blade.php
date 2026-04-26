@@ -62,9 +62,7 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}" class="text-muted">Forgot your password?</a>
-                    @endif
                 </div>
 
                 <div class="text-center mt-3">

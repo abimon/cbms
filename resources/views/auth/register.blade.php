@@ -59,36 +59,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="role" class="form-label">Role</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                        <select id="role" class="form-select @error('role') is-invalid @enderror" name="role" required>
-                            <option value="">Select your role</option>
-                            <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="Doctor" {{ old('role') == 'Doctor' ? 'selected' : '' }}>Doctor</option>
-                            <option value="Donor" {{ old('role') == 'Donor' ? 'selected' : '' }}>Donor</option>
-                            <option value="Guest" {{ old('role') == 'Guest' ? 'selected' : '' }}>Guest</option>
-                            <option value="Sub-Admin" {{ old('role') == 'Sub-Admin' ? 'selected' : '' }}>Sub-Admin</option>
-                        </select>
-                    </div>
-                    @error('role')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label for="avatar" class="form-label">Profile Photo (Optional)</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-image"></i></span>
-                        <input id="avatar" type="file" class="form-control @error('avatar') is-invalid @enderror"
-                            name="avatar" accept="image/*">
-                    </div>
-                    @error('avatar')
-                    <div class="text-danger small mt-1">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
