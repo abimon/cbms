@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\BagTimeline;
 use App\Models\BloodInventory;
 use App\Models\BloodBank;
@@ -97,7 +98,7 @@ class BloodInventoryController extends Controller
         // 
         // add 35 days to date collected
         $val['expiry_date'] = date('Y-m-d', strtotime($val['date_collected'] . ' + 35 days'));
-        $val['status']=request('status')??'not_tested';
+        $val['status'] = request('status') ?? 'not_tested';
         $inv = BloodInventory::create($val);
         BloodStorage::create([
             'bloodbag_id' => $inv->id,
@@ -155,96 +156,106 @@ class BloodInventoryController extends Controller
      */
     public function update($id)
     {
-        $bloodInventory = BloodInventory::findOrFail($id);
-        $message = '';
-        if (request()->filled('scan_data')) {
-            $payload = request()->input('scan_data');
-            try {
-                $decoded = json_decode($payload, true);
-                if (is_array($decoded)) {
-                    request()->merge($decoded);
+        try {
+            $bloodInventory = BloodInventory::findOrFail($id);
+            $message = '';
+            if (request()->filled('scan_data')) {
+                $payload = request()->input('scan_data');
+                try {
+                    $decoded = json_decode($payload, true);
+                    if (is_array($decoded)) {
+                        request()->merge($decoded);
+                    }
+                } catch (\Throwable $e) {
+                    // ignore
                 }
-            } catch (\Throwable $e) {
-                // ignore
             }
+            if (request('din') != null && request('din') != $bloodInventory->din) {
+                $bloodInventory->din = request('din');
+                $message = $message . ', din';
+            }
+            if (request('type') != null && request('type') != $bloodInventory->type) {
+                $bloodInventory->type = request('type');
+                $message = $message . ', type';
+            }
+            if (request('volume') != null && request('volume') != $bloodInventory->volume) {
+                $bloodInventory->volume = request('volume');
+                $message = $message . ', volume';
+            }
+            if (request('blood_type') != null && request('blood_type') != $bloodInventory->blood_type) {
+                $bloodInventory->blood_type = request('blood_type');
+                $message = $message . ', blood_type';
+            }
+            if (request('rhesus') != null && request('rhesus') != $bloodInventory->rhesus) {
+                $bloodInventory->rhesus = request('rhesus');
+                $message = $message . ', rhesus';
+            }
+            if (request('date_collected') != null && request('date_collected') != $bloodInventory->date_collected) {
+                $bloodInventory->date_collected = request('date_collected');
+                $message = $message . ', date_collected';
+            }
+            if (request('location') != null && request('location') != $bloodInventory->location) {
+                $bloodInventory->location = request('location');
+                $message = $message . ', location';
+            }
+            if (request('collection_agency') != null && request('collection_agency') != $bloodInventory->collection_agency) {
+                $bloodInventory->collection_agency = request('collection_agency');
+                $message = $message . ', collection_agency';
+            }
+            if (request('HIV') != null && request('HIV') != $bloodInventory->HIV) {
+                $bloodInventory->HIV = request('HIV');
+                $message = $message . ', HIV';
+            }
+            if (request('HCV') != null && request('HCV') != $bloodInventory->HCV) {
+                $bloodInventory->HCV = request('HCV');
+                $message = $message . ', HCV';
+            }
+            if (request('HBV') != null && request('HBV') != $bloodInventory->HBV) {
+                $bloodInventory->HBV = request('HBV');
+                $message = $message . ', HBV';
+            }
+            if (request('Syphilis') != null && request('Syphilis') != $bloodInventory->Syphilis) {
+                $bloodInventory->Syphilis = request('Syphilis');
+                $message = $message . ', Syphilis';
+            }
+            if (request('Malaria') != null && request('Malaria') != $bloodInventory->Malaria) {
+                $bloodInventory->Malaria = request('Malaria');
+                $message = $message . ', Malaria';
+            }
+            if (request('status') != null && request('status') != $bloodInventory->status) {
+                $bloodInventory->status = request('status');
+                $message = $message . ', status';
+            }
+            if (request('release_date') != null && request('release_date') != $bloodInventory->release_date) {
+                $bloodInventory->release_date = request('release_date');
+                $message = $message . ', release date';
+            }
+            if ($message != '') {
+                $bloodInventory->update();
+                BagTimeline::create([
+                    'bag_id' => $id,
+                    'user_id' => Auth::id(),
+                    'description' => 'Blood bag' . $message . ' updated'
+                ]);
+                Activity::create([
+                    'user_id' => Auth::id(),
+                    'description' => 'Updated blood bag with DIN: ' . $bloodInventory->din . ' (' . $message . ')'
+                ]);
+                $response = 'Blood inventory updated successfully.';
+            } else {
+                $response = 'No changes made.';
+            }
+            if (request()->is('api/*')) {
+                return response()->json(['message' => $response]);
+            } else {
+                return redirect()->route('blood-inventories.index')->with('success', $response);
+            }
+        } catch (\Throwable $th) {
+            if (request()->is('api/*')) {
+                return response()->json(['message' => $th->getMessage()]);
+            }
+            return redirect()->back()->with('error', $th->getMessage());
         }
-        if (request('din') != null && request('din') != $bloodInventory->din) {
-            $bloodInventory->din = request('din');
-            $message = $message . ', din';
-        }
-        if (request('type') != null && request('type') != $bloodInventory->type) {
-            $bloodInventory->type = request('type');
-            $message = $message . ', type';
-        }
-        if (request('volume') != null && request('volume') != $bloodInventory->volume) {
-            $bloodInventory->volume = request('volume');
-            $message = $message . ', volume';
-        }
-        if (request('blood_type') != null && request('blood_type') != $bloodInventory->blood_type) {
-            $bloodInventory->blood_type = request('blood_type');
-            $message = $message . ', blood_type';
-        }
-        if (request('rhesus') != null && request('rhesus') != $bloodInventory->rhesus) {
-            $bloodInventory->rhesus = request('rhesus');
-            $message = $message . ', rhesus';
-        }
-        if (request('date_collected') != null && request('date_collected') != $bloodInventory->date_collected) {
-            $bloodInventory->date_collected = request('date_collected');
-            $message = $message . ', date_collected';
-        }
-        if (request('location') != null && request('location') != $bloodInventory->location) {
-            $bloodInventory->location = request('location');
-            $message = $message . ', location';
-        }
-        if (request('collection_agency') != null && request('collection_agency') != $bloodInventory->collection_agency) {
-            $bloodInventory->collection_agency = request('collection_agency');
-            $message = $message . ', collection_agency';
-        }
-        if (request('HIV') != null && request('HIV') != $bloodInventory->HIV) {
-            $bloodInventory->HIV = request('HIV');
-            $message = $message . ', HIV';
-        }
-        if (request('HCV') != null && request('HCV') != $bloodInventory->HCV) {
-            $bloodInventory->HCV = request('HCV');
-            $message = $message . ', HCV';
-        }
-        if (request('HBV') != null && request('HBV') != $bloodInventory->HBV) {
-            $bloodInventory->HBV = request('HBV');
-            $message = $message . ', HBV';
-        }
-        if (request('Syphilis') != null && request('Syphilis') != $bloodInventory->Syphilis) {
-            $bloodInventory->Syphilis = request('Syphilis');
-            $message = $message . ', Syphilis';
-        }
-        if (request('Malaria') != null && request('Malaria') != $bloodInventory->Malaria) {
-            $bloodInventory->Malaria = request('Malaria');
-            $message = $message . ', Malaria';
-        }
-        if (request('status') != null && request('status') != $bloodInventory->status) {
-            $bloodInventory->status = request('status');
-            $message = $message . ', status';
-        }
-        if (request('release_date') != null && request('release_date') != $bloodInventory->release_date) {
-            $bloodInventory->release_date = request('release_date');
-            $message = $message . ', release date';
-        }
-        if($message !=''){
-            $bloodInventory->update();
-            BagTimeline::create([
-                'bag_id' => $id,
-                'user_id' => Auth::id(),
-                'description' => 'Blood bag' . $message . ' updated'
-            ]);
-            $response = 'Blood inventory updated successfully.';
-        }else{
-            $response = 'No changes made.';
-        }
-        if(request()->is('api/*')){
-            return response()->json(['message' =>$response]);
-        }else{
-            return redirect()->route('blood-inventories.index')->with('success', $response);
-        }
-        
     }
 
     /**
@@ -255,13 +266,14 @@ class BloodInventoryController extends Controller
         BloodInventory::destroy($id);
         return redirect()->route('blood-inventories.index')->with('success', 'Blood inventory deleted successfully.');
     }
-    public function query(){
-        
-        $bloodInventories = BloodInventory::where('blood_type',request('blood_type'))->get();
-        if(request()->is('api/*')){
-            return response()->json(['data' =>$bloodInventories]);
-        }else{
-            return view('blood-inventories.index',compact('bloodInventories'));
+    public function query()
+    {
+
+        $bloodInventories = BloodInventory::where('blood_type', request('blood_type'))->get();
+        if (request()->is('api/*')) {
+            return response()->json(['data' => $bloodInventories]);
+        } else {
+            return view('blood-inventories.index', compact('bloodInventories'));
         }
     }
 }
