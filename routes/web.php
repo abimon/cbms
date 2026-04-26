@@ -32,7 +32,7 @@ Route::group(['middleware' => ['web']], function () {
             'storages' => BloodStorageController::class,
             'banks' => BloodBankController::class,
             'withdrawals' => WithdrawalController::class,
-            'users' => UserController::class,
+            'system-users' => UserController::class,
         ]);
     });
     // Profile routes

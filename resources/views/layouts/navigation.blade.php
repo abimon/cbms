@@ -73,7 +73,7 @@
                 <h6 class="sidebar-section-title">User Management</h6>
             </div>
             <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='users/*'?'active':'' }}" href="{{ route('users.index') }}">Users</a>
+                <a class="nav-link {{ request()->path()=='system-users/*'?'active':'' }}" href="{{ route('system-users.index') }}">Users</a>
             </li>
         </ul>
     </div>
