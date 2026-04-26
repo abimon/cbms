@@ -34,6 +34,8 @@ class BloodInventoryController extends Controller
 
         $status = ['available', 'tested', 'not_tested'];
         foreach ($bloodgroups as $bloodgroup) {
+            $neg=0;
+            $pos=0;
             $blood = BloodInventory::where('blood_type', $bloodgroup)->get();
             foreach ($blood as $bag) {
                 if (in_array($bag->status, $status)) {
@@ -44,8 +46,8 @@ class BloodInventoryController extends Controller
                     }
                 }
             }
-            array_push($data, $neg);
-            array_push($data, $pos);
+            array_push($data, [ 'group' => $bloodgroup.'-', 'units' => $neg]);
+            array_push($data, ['group' => $bloodgroup.'+', 'units' => $pos]);
         }
         $nt = BloodInventory::where('blood_type', 'NT')->sum('volume');
         array_push($data, ['group' => 'NT', 'units' => $nt]);
