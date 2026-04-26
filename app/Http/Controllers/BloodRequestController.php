@@ -36,7 +36,7 @@ class BloodRequestController extends Controller
     {
         $validated= request()->validate([
             'request_type' => 'required|in:component,whole_blood',
-            'blood_type' => 'required|in:A-,A+,B-,B+,AB-,AB+,O-,O+',
+            'blood_type' => 'required|in:A-,A+,B-,B+,AB-,AB+,O-,O+,whole_blood,prbc,platelets,plasma,cryoprecipitate',
             'quantity' => 'required|integer|min:1',
             'hospital' => 'required|string',
             'contact_phone' => 'required|string',
