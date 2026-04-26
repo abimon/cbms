@@ -21,7 +21,8 @@ class HomeController extends Controller
         foreach ($banks as $bank) {
             $bankData = ['label' => $bank->name, 'data' => []];
             foreach ($bloodTypes as $type) {
-                $quantity = BloodInventory::where([['status', '!=', 'expired'], ['status','!=','withdrawn'],['status','!=','used'],['collection_agency', $bank->name], ['blood_type', $type]])->sum('volume');
+                $blood = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type]])->get();
+                $quantity = $blood->whereIn('status', $status)->sum('volume');
                 $bankData['data'][] = $quantity;
                 $bankData['data'][] = $quantity;
             }
