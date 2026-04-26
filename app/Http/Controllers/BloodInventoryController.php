@@ -19,8 +19,11 @@ class BloodInventoryController extends Controller
     {
         $bloodInventories = BloodInventory::paginate(25);
         if (request()->is('api/*')) {
+            if(request('query')!=null){
+                $bloodInventories = BloodInventory::where(request('query')['column'], request('query')['value'])->get();
+            }
             return response()->json([
-                'banks' => $bloodInventories,
+                'bags' => $bloodInventories,
                 'message' => 'Blood Inventories Retrieved Successfully',
                 'status' => 'success'
             ], 200);
