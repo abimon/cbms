@@ -15,7 +15,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('/home', function () {
         return redirect('/dashboard');
-    });
+    })->name('home');
 
     Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 

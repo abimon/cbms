@@ -51,7 +51,7 @@
     <div class="sidebar">
         <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='home'?'active':'' }}" href="{{ route('home') }}">Dashboard</a>
+                <a class="nav-link {{ request()->path()=='dashboard'?'active':'' }}" href="{{ route('dashboard') }}">Dashboard</a>
             </li>
             <div class="sidebar-section">
                 <h6 class="sidebar-section-title">Management</h6>
