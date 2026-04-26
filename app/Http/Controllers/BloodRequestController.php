@@ -15,8 +15,8 @@ class BloodRequestController extends Controller
             $requests = BloodRequest::all();
             return response()->json(['data' => $requests]);
         }else{
-            $requests = BloodRequest::paginate(10);
-            return view('blood_requests.index', compact('requests'));
+            $bloodRequests = BloodRequest::paginate(10);
+            return view('blood_requests.index', compact('bloodRequests'));
         }
     }
 
