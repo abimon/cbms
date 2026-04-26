@@ -14,10 +14,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/query', 'query');
     });
     Route::resources([
+        
+    ]);
+    Route::apiResources([
         'blood-inventories' => BloodInventoryController::class,
-        'blood_banks'=>BloodBankController::class,
-        'blood-storage'=>BloodStorageController::class,
-        'blood-request'=>BloodRequestController::class
+        'blood_banks' => BloodBankController::class,
+        'blood-storage' => BloodStorageController::class,
+        'blood-request' => BloodRequestController::class
     ]);
     Route::controller(WithdrawalController::class)->prefix('blood-withdrawals/')->group(function () {
         Route::get('/', 'index');
