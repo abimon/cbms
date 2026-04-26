@@ -53,7 +53,7 @@ class HomeController extends Controller
     }
     public function report(){
         $bags = BloodInventory::whereIn('status', ['available', 'tested', 'not_tested'])->get();
-        $withdrawals = Withdrawal::where('status', 'withdrawn')->get();
+        $withdrawals = Withdrawal::orderBy('created_at', 'desc')->take(10)->get();
         $activities=Activity::orderBy('created_at', 'desc')->take(10)->get();
         foreach($activities as $activity){
             $activity->user_name = $activity->user ? $activity->user->name : 'Unknown';
