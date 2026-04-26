@@ -42,6 +42,10 @@
             height: var(--topbar-height);
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
         }
 
         .top-navbar .navbar-brand {
@@ -488,22 +492,19 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
 
-        @include('layouts.navigation')
-
-        <!-- Page Heading -->
-        @isset($header)
-        <header class="bg-white dark:bg-gray-800 shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
-            </div>
-        </header>
-        @endisset
-
         <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+            @guest
+            @yield('content')
+            @else
+            @include('layouts.navigation')
+            <div class="main-content">
+                @yield('content')
+            </div>
+            @endguest
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
