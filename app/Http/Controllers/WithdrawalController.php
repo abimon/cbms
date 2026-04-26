@@ -47,7 +47,7 @@ class WithdrawalController extends Controller
                 'status' => 'requested',
                 'bank_id' => request('bank_id')
             ]);
-            $bag->status = 'withdrawn';
+            $bag->status = 'requested';
             $bag->update();
             Activity::create([
                 'user_id' => Auth::id(),
@@ -98,6 +98,13 @@ class WithdrawalController extends Controller
             $withdrawal->update([
                 'status' => request('status')
             ]);
+            if(request('status') == 'approved'){
+                $withdrawal->bloodbag->status = 'withdrawn';
+                $withdrawal->bloodbag->update();
+            }elseif(request('status') == 'rejected'){
+                $withdrawal->bloodbag->status = 'available';
+                $withdrawal->bloodbag->update();
+            }
             Activity::create([
                 'user_id' => Auth::id(),
                 'activity' => ucfirst(request('status')).'ed withdrawal of blood bag with DIN: ' . $withdrawal->bloodbag->din

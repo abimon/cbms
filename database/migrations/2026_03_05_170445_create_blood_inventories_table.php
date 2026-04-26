@@ -47,7 +47,7 @@ return new class extends Migration
             $table->string('Malaria')->default('NT');
             $table->date('release_date')->nullable();
             $table->date('expiry_date')->nullable();
-            $table->enum('status', ['tested', 'not_tested', 'available', 'used', 'expired','withdrawn'])->default('available');
+            $table->enum('status', ['not_tested', 'requested', 'available', 'used', 'expired','withdrawn'])->default('available');
             $table->timestamps();
         });
     }
