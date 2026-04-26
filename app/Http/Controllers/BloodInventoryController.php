@@ -31,11 +31,11 @@ class BloodInventoryController extends Controller
     {
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
-
+        $nt = 0;
         $status = ['available', 'tested', 'not_tested'];
         foreach ($bloodgroups as $bloodgroup) {
-            $neg=0;
-            $pos=0;
+            $neg = 0;
+            $pos = 0;
             $blood = BloodInventory::where('blood_type', $bloodgroup)->get();
             foreach ($blood as $bag) {
                 if (in_array($bag->status, $status)) {
@@ -43,15 +43,16 @@ class BloodInventoryController extends Controller
                         $neg += $bag->volume;
                     } else if ($bag->rhesus == 'Positive') {
                         $pos += $bag->volume;
+                    } else {
+                        $nt += $bag->volume;
                     }
                 }
             }
-            array_push($data, [ 'group' => $bloodgroup.'-', 'units' => $neg]);
-            array_push($data, ['group' => $bloodgroup.'+', 'units' => $pos]);
+            array_push($data, ['group' => $bloodgroup . '-', 'units' => $neg]);
+            array_push($data, ['group' => $bloodgroup . '+', 'units' => $pos]);
         }
-        $nt = BloodInventory::where('blood_type', 'NT')->sum('volume');
         array_push($data, ['group' => 'NT', 'units' => $nt]);
-            return response()->json(['data' => $data]);
+        return response()->json(['data' => $data]);
     }
 
     /**
@@ -106,8 +107,8 @@ class BloodInventoryController extends Controller
                 }
                 return back()->withErrors($val)->withInput();
             }
-            $user =User_bank::where([['user_id', Auth::id()],['bank_id', BloodBank::where('name', request('collection_agency'))->first()->id],['status', 'approved']])->firstOrFail();
-            if(!$user){
+            $user = User_bank::where([['user_id', Auth::id()], ['bank_id', BloodBank::where('name', request('collection_agency'))->first()->id], ['status', 'approved']])->firstOrFail();
+            if (!$user) {
                 if (request()->is('api/*')) {
                     return response()->json(['message' => 'You are not associated to this collection agency'], 404);
                 }
