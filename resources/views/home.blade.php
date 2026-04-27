@@ -97,7 +97,7 @@
                                     <td>{{$request->quantity}} units</td>
                                     <td>{{$request->hospital}}</td>
                                     <td><span class="badge-status badge-pending">{{$request->status}}</span></td>
-                                    <td>{{$request->created_at->diffForHuman()}}</td>
+                                    <td>{{$request->created_at->diffForHumans()}}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
