@@ -56,6 +56,8 @@ class RelayStatusController extends Controller
         }
         // check if the code is expired
         if($relayStatus->created_at < now()->subMinutes(5)){
+            $relayStatus->isDone= true;
+            $relayStatus->update();
             return response()->json([
                 'message'=>'Response time has expired'
             ],400);
