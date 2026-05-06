@@ -42,6 +42,11 @@ class RelayStatusController extends Controller
     }
     public function actuate(){
         $relayStatus = RelayStatus::where('board_id',request('board_id'))->firstOrFail();
+        if(!$relayStatus){
+            return response()->json([
+                'message'=>'Relay Status Not Found'
+            ],400);
+        }
         // check if the relay status is done
         if($relayStatus->isDone){
             return response()->json([
