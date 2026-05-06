@@ -30,6 +30,7 @@ class RelayStatusController extends Controller
     {
         $code = strtoupper(substr(uniqid(), 0, 8));
         RelayStatus::create([
+            'board_id'=>request('board_id'),
             'relay_id'=>request('relay_id'),
             'status'=>request('status'),
             'isDone'=>request('isDone'),
