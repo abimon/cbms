@@ -42,7 +42,7 @@ class RelayStatusController extends Controller
         ],201);
     }
     public function actuate(){
-        $relayStatus = RelayStatus::where('board_id',request('board_id'))->firstOrFail();
+        $relayStatus = RelayStatus::orderBy('created_at','desc')->where('board_id',request('board_id'))->firstOrFail();
         if(!$relayStatus){
             return response()->json([
                 'message'=>'Relay Status Not Found'
