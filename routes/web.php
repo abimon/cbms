@@ -21,7 +21,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/home', function () {
         return redirect('/dashboard');
     })->name('home');
-
     Route::middleware(['auth','verified'])->group(function () {
 
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
