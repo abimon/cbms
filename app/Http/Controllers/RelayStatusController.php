@@ -41,7 +41,7 @@ class RelayStatusController extends Controller
         ],201);
     }
     public function actuate(){
-        $relayStatus = RelayStatus::where('board_id',request('code'))->first();
+        $relayStatus = RelayStatus::where('board_id',request('board_id'))->first();
         // check if the relay status is done
         if($relayStatus->isDone){
             return response()->json([
