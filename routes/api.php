@@ -10,15 +10,17 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
 
+Route::controller(RelayStatusController::class)->group(function () {
+    Route::get('/get-pending-command', 'actuate');
+    Route::get('/confirm-relay', 'actuate');
+    Route::post('/relay-status/store','store')->middleware('auth:sanctum');
+});
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(BloodInventoryController::class)->group(function(){
         Route::get('/dashboard','dashboard');
         Route::get('/query', 'query');
     });
-    Route::controller(RelayStatusController::class)->group(function(){
-        Route::get('/get-pending-command', 'actuate');
-        Route::get('/confirm-relay', 'actuate');
-    });
+    
     Route::controller(HomeController::class)->group(function(){
         Route::get('/report', 'report');
     });
