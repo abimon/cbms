@@ -96,6 +96,49 @@ class UserController extends Controller
             return back()->with('message', $th->getMessage());
         }
     }
+    // confirm user
+    public function confirmUser()
+    {
+        try {
+            $validate = request()->validate([
+                'email' => 'required|email|max:255',
+                'password' => 'required|string|max:255',
+            ]);
+            if (!$validate) {
+                if (request()->is('api/*')) {
+                    return response()->json(['message' => 'Validation failed'], 401);
+                }
+                return back()->with('message', 'Validation failed');
+            }
+            $user = User::where('email', $validate['email'])->first();
+
+            if (!$user) {
+                if (request()->is('api/*')) {
+                    return response()->json(['message' => 'Unregistered email'], 401);
+                }
+                return back()->with('message', 'Unregistered email');
+            }
+            if (!Hash::check($validate['password'], $user->password)) {
+                if (request()->is('api/*')) {
+                    return response()->json(['message' => 'Wrong password'], 401);
+                }
+                return back()->with('message', 'Wrong password');
+            }
+            if (request()->is('api/*')) {
+
+                $user->tokens()->delete();
+                return response()->json([
+                    'status' => 'Success',
+                ], 200);
+            }
+            return back()->with('message', 'User logged in successfully');
+        } catch (Throwable $th) {
+            if (request()->is('api/*')) {
+                return response()->json(['message' => $th->getMessage()], 401);
+            }
+            return back()->with('message', $th->getMessage());
+        }
+    }
     // forgot password
     public function forgotPassword()
     {

@@ -48,4 +48,5 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/reset-password', 'resetPassword');
     Route::get('/profile', 'profile')->middleware('auth:sanctum');
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
+    Route::post('/confirmUser', 'confirmUser')->middleware('auth:sanctum');
 });
