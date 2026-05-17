@@ -144,12 +144,14 @@
                         <input type="email" class="form-control" id="email" name="email">
                     </div>
                     <h4 class="fw-bold">Blood thresholds per blood group(Minimum pints)</h4>
-                    @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $group)
-                    <div class="mb-3">
-                        <label for="threshold_{{ $group }}" class="form-label">{{ $group }} threshold</label>
-                        <input type="number" class="form-control" id="threshold_{{ $group }}" name="threshold_{{ $group }}">
+                    <div class="row">
+                        @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $group)
+                        <div class="mb-3 col-md-6">
+                            <label for="threshold_{{ $group }}" class="form-label">{{ $group }} threshold</label>
+                            <input type="number" class="form-control" id="threshold_{{ $group }}" name="threshold_{{ $group }}">
+                        </div>
+                        @endforeach
                     </div>
-                    @endforeach
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
