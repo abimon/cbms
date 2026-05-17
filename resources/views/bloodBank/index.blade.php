@@ -91,8 +91,8 @@ $bloodgroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
                         <span>{{ $bank->email }}</span>
                     </div>
                     @endif
-                    @foreach($bank->threshold as $threshold)
-                    {{ $threshold->blood_group }}:{{ $threshold->threshold }}pi
+                    @foreach(json_decode($bank->threshold) as $threshold)
+                    {{ $threshold->blood_group }}:{{ $threshold->threshold }}pints
                     @endforeach
                 </div>
                 <div class="card-footer bg-transparent">
