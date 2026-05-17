@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+$bloodgroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+@endphp
 <div class="fade-in">
     <div class="page-header">
         <div>
@@ -88,6 +91,7 @@
                         <span>{{ $bank->email }}</span>
                     </div>
                     @endif
+                    {{ $bank->threshold }}
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="#" class="btn btn-sm btn-outline-primary">
@@ -145,10 +149,10 @@
                     </div>
                     <h6 class="fw-bold">Blood thresholds per blood group(Minimum pints)</h6>
                     <div class="row">
-                        @foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $group)
+                        @foreach ($bloodgroups as $group)
                         <div class="mb-3 col-md-6">
                             <label for="threshold_{{ $group }}" class="form-label">{{ $group }} threshold</label>
-                            <input type="number" class="form-control" id="threshold_{{ $group }}" name="threshold_{{ $group }}">
+                            <input type="number" class="form-control" id="threshold_{{ $group }}" name="threshold_{{ $group }}" required>
                         </div>
                         @endforeach
                     </div>

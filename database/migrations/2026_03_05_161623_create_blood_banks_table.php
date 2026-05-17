@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('location');
             $table->string('contact_phone');
             $table->string('email')->nullable();
+            $table->longText('threshold');
             $table->enum('status',['allowed','pending','rejected'])->default('pending');
             $table->timestamps();
         });
