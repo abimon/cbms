@@ -29,7 +29,7 @@ class BloodBankController extends Controller
                     'name' => $bank->name
                 ]);
             }
-            return response()->json(['_banks'=>$_banks,'banks'=>$banks]);
+            return response()->json(['_banks' => $_banks, 'banks' => $banks]);
         }
         return view('bloodBank.index', compact('banks'));
     }
@@ -55,8 +55,15 @@ class BloodBankController extends Controller
                 'contact_phone' => 'required',
                 'email' => 'required|email|unique:blood_banks'
             ]);
+            $threshold = [];
+            foreach (['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as $group) {
+                array_push($threshold, [
+                    'blood_group' => $group,
+                    'threshold' => request('threshold_'.$group),
+                ]);
+            }
+            $validate['threshold'] = json_encode($threshold);
             $bank = BloodBank::create($validate);
-
             if (Auth::user()->role == 'Admin') {
                 User_bank::create([
                     'user_id' => Auth::user()->id,
