@@ -125,7 +125,6 @@ class UserController extends Controller
                 return back()->with('message', 'Wrong password');
             }
             if (request()->is('api/*')) {
-
                 $user->tokens()->delete();
                 return response()->json([
                     'status' => 'Success',

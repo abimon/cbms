@@ -15,6 +15,9 @@ Route::controller(RelayStatusController::class)->group(function () {
     Route::get('/confirm-relay', 'actuate');
     Route::post('/relay-status/store','store')->middleware('auth:sanctum');
 });
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/banks', 'banks');
+});
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(BloodInventoryController::class)->group(function(){
         Route::get('/dashboard','dashboard');

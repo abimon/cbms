@@ -75,5 +75,14 @@ class HomeController extends Controller
         }
         return view('report', compact('bags', 'withdrawals','activities'));
     }
+
+    public function banks(){
+        $banks = BloodBank::select('id','name')->get();
+        if(request()->is('api/*')){
+            return response()->json([
+                'banks'=>$banks
+            ]);
+        }
+    }
     
 }
