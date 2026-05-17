@@ -21,7 +21,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/home', function () {
         return redirect('/dashboard');
     })->name('home');
-    Route::middleware(['auth','verified'])->group(function () {
+    Route::middleware(['auth','verified', 'isVerified'])->group(function () {
 
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
         Route::get('/blood-dashboard', [BloodInventoryController::class, 'dashboard'])->name('dashboard');
