@@ -34,14 +34,15 @@ Route::group(['middleware' => ['web']], function () {
             'withdrawals' => WithdrawalController::class,
             'system-users' => UserController::class,
         ]);
+        // Profile routes
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/profile', 'profile')->name('profile.index');
+            Route::put('/profile/update', 'updateProfile')->name('profile.update');
+            Route::put('/profile/password', 'updatePassword')->name('profile.password');
+            Route::put('/profile/notifications', 'updateNotifications')->name('profile.notifications');
+            Route::get('/profile/edit/{id}', 'edit')->name('profile.edit');
+        });
     });
-    // Profile routes
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/profile', 'profile')->name('profile.index');
-        Route::put('/profile/update', 'updateProfile')->name('profile.update');
-        Route::put('/profile/password', 'updatePassword')->name('profile.password');
-        Route::put('/profile/notifications', 'updateNotifications')->name('profile.notifications');
-        Route::get('/profile/edit/{id}', 'edit')->name('profile.edit');
-    });
+    
 });
 require __DIR__ . '/auth.php';

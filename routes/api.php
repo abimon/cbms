@@ -18,7 +18,7 @@ Route::controller(RelayStatusController::class)->group(function () {
 Route::controller(HomeController::class)->group(function () {
     Route::get('/banks', 'banks');
 });
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function () {
     Route::controller(BloodInventoryController::class)->group(function(){
         Route::get('/dashboard','dashboard');
         Route::get('/query', 'query');
@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::controller(HomeController::class)->group(function(){
         Route::get('/report', 'report');
-    });
+    })->middleware('isAdmin');
     Route::apiResources([
         'blood-inventories' => BloodInventoryController::class,
         'blood_banks' => BloodBankController::class,
