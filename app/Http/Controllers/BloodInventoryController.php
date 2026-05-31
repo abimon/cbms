@@ -17,7 +17,9 @@ class BloodInventoryController extends Controller
      */
     public function index()
     {
-        $bloodInventories = BloodInventory::paginate(25);
+        $itemsPerPage = request('items_per_page', 20);
+        $bankName = BloodBank::findOrFail(session('bank_id'))->name ;
+        $bloodInventories = BloodInventory::where('collection_agency', $bankName)->simplePaginate($itemsPerPage);
         if (request()->is('api/*')) {
             if(request('query')!=null){
                 $bloodInventories = BloodInventory::where(request('query')['column'], request('query')['value'])->get();

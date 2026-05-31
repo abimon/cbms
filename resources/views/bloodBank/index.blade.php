@@ -92,9 +92,15 @@ $bloodgroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
                     </div>
                     @endif
                     @if($bank->threshold!=null)
-                    @foreach(json_decode($bank->threshold) as $threshold)
-                    {{ $threshold->blood_group }}:{{ $threshold->threshold }}pints
-                    @endforeach
+                    <h5 class="mt-4 mb-3 fw-bold">Blood Group Thresholds</h5>
+                    <div class="row">
+                        @foreach (json_decode($bank->threshold) as $group => $threshold)
+                        <div class="col-6 mb-2">
+                            <span class="badge bg-secondary">{{ $threshold->blood_group }}</span>
+                            <span class="ms-2">{{ $threshold->threshold }} pints</span>
+                        </div>
+                        @endforeach
+                    </div>
                     @endif
                 </div>
                 <div class="card-footer bg-transparent">

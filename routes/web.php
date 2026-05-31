@@ -9,10 +9,14 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminController;
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', function () {
         if (Auth::check()) {
+            if (Auth::user()->role == 'Admin') {
+                return redirect()->route('admin.dashboard');
+            }
             return redirect('/dashboard');
         }
         return view('welcome');
@@ -22,6 +26,11 @@ Route::group(['middleware' => ['web']], function () {
         return redirect('/dashboard');
     })->name('home');
     Route::middleware(['auth','verified', 'isVerified'])->group(function () {
+
+        // Admin routes
+        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+        Route::post('/admin/login-as/{bankId}', [AdminController::class, 'loginAs'])->name('admin.login_as');
+
 
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
         Route::get('/blood-dashboard', [BloodInventoryController::class, 'dashboard'])->name('dashboard');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BloodBank;
 use App\Models\BloodRequest;
 
 class BloodRequestController extends Controller
@@ -11,11 +12,14 @@ class BloodRequestController extends Controller
      */
     public function index()
     {
+
+        
         if(request()->is('api/*')){
             $requests = BloodRequest::all();
             return response()->json(['data' => $requests]);
         }else{
-            $bloodRequests = BloodRequest::paginate(10);
+            $bankName = BloodBank::findOrFail(session('bank_id'))->name;
+            $bloodRequests = BloodRequest::where('collection_agency', $bankName)->simplePaginate(10);
             return view('blood_requests.index', compact('bloodRequests'));
         }
     }
@@ -38,13 +42,12 @@ class BloodRequestController extends Controller
             'request_type' => 'required|in:component,whole_blood',
             'blood_type' => 'required|in:A-,A+,B-,B+,AB-,AB+,O-,O+,whole_blood,prbc,platelets,plasma,cryoprecipitate',
             'quantity' => 'required|integer|min:1',
-            'hospital' => 'required|string',
+            'recepient_hospital' => 'required|string',
             'contact_phone' => 'required|string',
+            'donor_hospital'=>'nullable|string',
             'reason' => 'nullable|string',
         ]);
-
         BloodRequest::create($validated);
-
         if(request()->is('api/*')){
             return response()->json(['message' => 'Blood request created successfully.'], 201);
         }else{

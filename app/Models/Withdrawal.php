@@ -10,6 +10,7 @@ class Withdrawal extends Model
         'bloodbag_id',
         'user_id',
         'bank_id',
+        'purpose',
         'status'
     ];
     public function bloodbag(){

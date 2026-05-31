@@ -48,7 +48,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <form method="GET" action="" class="row g-3">
-                
+
                 <div class="col-md-3">
                     <select name="blood_type" class="form-select">
                         <option value="">All Blood Types</option>
@@ -100,6 +100,7 @@
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>DIN</th>
                             <th>Blood Type</th>
                             <th>Rhesus</th>
@@ -114,6 +115,7 @@
                     <tbody>
                         @forelse($bloodInventories as $inventory)
                         <tr>
+                            <td>{{ $loop->iteration + ($bloodInventories->currentPage() - 1) * $bloodInventories->perPage() }}</td>
                             <td><strong>{{ $inventory->din }}</strong></td>
                             <td>
                                 <span class="blood-type blood-type-{{ strtolower($inventory->blood_type) }}">
@@ -191,8 +193,8 @@
             </div>
         </div>
         @if($bloodInventories->hasPages())
-        <div class="card-footer">
-            {{ $bloodInventories->links() }}
+        <div class="card-footer d-flex justify-content-center">
+            {{ $bloodInventories->onEachSide(5)->links() }}
         </div>
         @endif
     </div>

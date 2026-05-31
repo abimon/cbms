@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('bloodbag_id')->constrained('blood_inventories')->cascadeOnDelete();
             $table->foreignId('bank_id')->constrained('blood_banks')->cascadeOnDelete();
-            $table->string('status')->default('requested');
+            $table->enum('purpose',['testing','transfer','disposal'])->default('testing');
+            $table->string('status')->default('withdrawn');
             $table->timestamps();
         });
     }

@@ -1,8 +1,27 @@
 @extends('layouts.app')
 @section('content')
 <div class="fade-in">
-    <!-- Page Header -->
+
+    @if($errors)
+    <div class="row d-flex justify-content-center mb-4">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="text-center text-danger">
+                <i class="bi bi-exclamation-triangle fs-1"></i>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <ul style="list-style: none;">
+                @foreach($errors as $error)
+                <li>⚠️ {{ $error }}</li>
+                @endforeach
+            </ul>
+
+        </div>
+
+    </div>
+    @endif
     <div class="page-header">
+
         <div>
             <h1 class="page-title">Dashboard</h1>
             <p class="page-subtitle">Welcome back, {{ auth()->user()->name }}!</p>
@@ -42,9 +61,9 @@
         </div>
         <div class="col-md-6 col-lg-3">
             <div class="stat-card info">
-                <i class="bi bi-hospital stat-icon"></i>
-                <div class="stat-value">{{ $banks->count() ?? 0 }}</div>
-                <div class="stat-label">Blood Banks</div>
+                <i class="bi bi-clipboard stat-icon"></i>
+                <div class="stat-value">{{ $totalWithdrawals??0 }}</div>
+                <div class="stat-label">Total Withdrawals</div>
             </div>
         </div>
     </div>
@@ -90,7 +109,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($requests as $request)
+                                @forelse ($requests as $request)
                                 <tr>
                                     <td>#REQ-{{$request->id}}</td>
                                     <td><span class="blood-type blood-type-a">A+</span></td>
@@ -99,7 +118,14 @@
                                     <td><span class="badge-status badge-pending">{{$request->status}}</span></td>
                                     <td>{{$request->created_at->diffForHumans()}}</td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">
+                                        <i class="bi bi-question-circle fs-1"></i>
+                                        <p class="mt-2">No blood requests found</p>
+                                    </td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

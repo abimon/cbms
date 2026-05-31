@@ -1,80 +1,89 @@
-<!-- Navigation -->
-<div class="">
-    <div class="top-navbar">
-        <!-- navigation -->
-        <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="log.png" alt="CBMS Logo" height="30">
-                    Centralized Blood Management System
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<div class="top-navbar">
+    <!-- navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand text-uppercase" href="{{ url('/') }}">
+                <img src="/storage/images/log.png" alt="CBMS Logo" height="30">
+                VITAL FLOW
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
+            </a>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                        <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ auth()->user()->name }}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Left Side Of Navbar -->
+
+                <!-- Right Side Of Navbar -->
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item dropdown">
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            {{ auth()->user()->name }}
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ route('profile.index') }}">
+                                <i class="bi bi-person-circle me-2"></i>Profile
+                            </a>
+                            <a class="dropdown-item" href="{{ route('profile.password') }}">
+                                <i class="bi bi-shield-lock me-2"></i>Change Password
+                            </a>
+                            <a class="dropdown-item" href="{{ route('logout') }}"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i>Logout
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('profile.index') }}">
-                                    <i class="bi bi-person-circle me-2"></i>Profile
-                                </a>
-                                <a class="dropdown-item" href="{{ route('profile.password') }}">
-                                    <i class="bi bi-shield-lock me-2"></i>Change Password
-                                </a>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                </a>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </div>
-    <div class="sidebar">
-        <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='dashboard'?'active':'' }}" href="{{ route('dashboard') }}">Dashboard</a>
-            </li>
-            <div class="sidebar-section">
-                <h6 class="sidebar-section-title">Blood Management</h6>
-            </div>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='banks/*'?'active':'' }}" href="{{ route('banks.index') }}">Blood Banks</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='inventories/*'?'active':'' }}" href="{{ route('inventories.index') }}">Blood Inventories</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='requests/*'?'active':'' }}" href="{{ route('requests.index') }}">Blood Requests</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='withdrawals/
-                *'?'active':'' }}" href="{{ route('withdrawals.index') }}">Withdrawals</a>
-            </li>
-            <div class="sidebar-section">
-                <h6 class="sidebar-section-title">User Management</h6>
-            </div>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->path()=='system-users/*'?'active':'' }}" href="{{ route('system-users.index') }}">Users</a>
-            </li>
-        </ul>
-    </div>
+        </div>
+    </nav>
 </div>
+@if(!request()->is('admin/*'))
+<div class="sidebar">
+    <div class="m-3 p-3 text-center text-uppercase fw-bold">
+        @if(session('bank_id'))
+        {{ App\Models\BloodBank::find(session('bank_id'))->name}} Dashboard
+        @endif
+    </div>
+    <ul class="navbar-nav me-auto">
+
+        @if(auth()->user()->role=='Admin')
+        <li class="nav-item">
+            <a class="nav-link {{ request()->is('admin/*')?'active':'' }}" href="{{ route('admin.dashboard') }}">Administrator</a>
+        </li>
+        @endif
+        <li class="nav-item">
+            <a class="nav-link {{ request()->path()=='dashboard'?'active':'' }}" href="{{ route('dashboard') }}">Dashboard</a>
+        </li>
+        <div class="sidebar-section">
+            <h6 class="sidebar-section-title">Blood Management</h6>
+        </div>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->path()=='inventories/*'?'active':'' }}" href="{{ route('inventories.index') }}">Blood Inventories</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->path()=='requests/*'?'active':'' }}" href="{{ route('requests.index') }}">Blood Requests</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->path()=='withdrawals/
+                *'?'active':'' }}" href="{{ route('withdrawals.index') }}">Withdrawals</a>
+        </li>
+        <div class="sidebar-section">
+            <h6 class="sidebar-section-title">User Management</h6>
+        </div>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->path()=='system-users/*'?'active':'' }}" href="{{ route('system-users.index') }}">Users</a>
+        </li>
+    </ul>
+</div>
+@endif

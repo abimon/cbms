@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\User_bank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -193,7 +194,8 @@ class UserController extends Controller
     // User Management
     public function index()
     {
-        $users = User::paginate(25);
+        $bankusers = User_bank::where('bank_id', session('bank_id'))->pluck('user_id')->toArray();
+        $users= User::whereIn('id', $bankusers)->simplePaginate(10);
         if (request()->is('api/*')) {
             return response()->json($users);
         }

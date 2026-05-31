@@ -16,7 +16,8 @@ return new class extends Migration
             $table->enum('request_type', ['component', 'whole_blood'])->default('whole_blood');
             $table->enum('blood_type',['A-', 'A+', 'B-', 'B+', 'AB-', 'AB+', 'O-', 'O+']);
             $table->integer('quantity');
-            $table->string('hospital');
+            $table->string('donor_hospital')->nullable();
+            $table->string('recepient_hospital');
             $table->string('contact_phone');
             $table->text('reason');
             $table->enum('status', ['pending', 'approved', 'fulfilled', 'rejected'])->default('pending');

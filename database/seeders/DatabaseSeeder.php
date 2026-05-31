@@ -6,6 +6,7 @@ use App\Models\BloodInventory;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,14 +17,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        BloodInventory::factory(1000)->create();
-        $this->call(BloodBankSeeder::class);
+        User::create([
+            'name' =>'Edimon A. O',
+            'email' => 'eabimon@gmail.com',
+            'phone' => '0701583807',
+            'avatar' => null,
+            'is_verified' => true,
+            'role' => 'Admin',
+            'is_admin' => true,
+            'email_verified_at' => now(),
+            'password' =>  Hash::make('Admin@1234'),
+        ]);
+        BloodInventory::factory(19)->create();
+        $this->call(\Database\Seeders\RelevantTablesSeeder::class);
     }
 }

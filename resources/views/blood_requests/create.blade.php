@@ -44,14 +44,26 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="hospital" class="form-label">Hospital/Medical Facility *</label>
-                            <select class="form-select @error('blood_type') is-invalid @enderror" id="blood_type" name="blood_type" required>
+                            <label for="recepient_hospital" class="form-label">Recepient Hospital/Medical Facility *</label>
+                            <select class="form-select @error('recepient_hospital') is-invalid @enderror" id="recepient_hospital" name="recepient_hospital" required>
                                 <option value="">Select Facility</option>
                                 @foreach(App\Models\BloodBank::select('name')->get() as $facility)
-                                <option value="{{ $facility->name }}" {{ old('blood_type') == $facility->name ? 'selected' : '' }}>{{ $facility->name }}</option>
+                                <option value="{{ $facility->name }}" {{ old('recepient_hospital') == $facility->name ? 'selected' : '' }}>{{ $facility->name }}</option>
                                 @endforeach
                             </select>
-                            @error('hospital')
+                            @error('recepient_hospital')
+                            <div class="text-danger small">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="donor_hospital" class="form-label">Donor Hospital/Medical Facility *</label>
+                            <select class="form-select @error('donor_hospital') is-invalid @enderror" id="donor_hospital" name="donor_hospital" required>
+                                <option value="">Select Facility</option>
+                                @foreach(App\Models\BloodBank::select('name')->get() as $facility)
+                                <option value="{{ $facility->name }}" {{ old('donor_hospital') == $facility->name ? 'selected' : '' }}>{{ $facility->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('donor_hospital')
                             <div class="text-danger small">{{ $message }}</div>
                             @enderror
                         </div>

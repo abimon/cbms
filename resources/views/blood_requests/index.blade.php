@@ -81,7 +81,7 @@
                                 </span>
                             </td>
                             <td>{{ $request->quantity }} units</td>
-                            <td>{{ $request->hospital }}</td>
+                            <td>{{ $request->recepient_hospital }}</td>
                             <td>{{ $request->contact_phone }}</td>
                             <td>{{ \Carbon\Carbon::parse($request->request_date)->format('M d, Y') }}</td>
                             <td>

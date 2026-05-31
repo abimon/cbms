@@ -16,7 +16,7 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user() && (Auth::user()->role=='SuperAdmin')|| (Auth::user()->role == 'Admin')) {
+        if (Auth::user() && (Auth::user()->role=='SupperAdmin')|| (Auth::user()->role == 'Admin')) {
             return $next($request);
         }
         return redirect('/error?error=403');

@@ -49,6 +49,6 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
     protected function blood_banks(){
-        return $this->hasMany(User_bank::class);
+        return $this->belongsTo(User_bank::class,'id','user_id');
     }
 }

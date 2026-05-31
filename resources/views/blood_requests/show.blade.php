@@ -20,7 +20,7 @@
                 </div>
                 <dl class="row align-items-center">
                     <dt class="col-sm-5 text-muted">Hospital</dt>
-                    <dd class="col-sm-7">{{ $bloodRequest->hospital }}</dd>
+                    <dd class="col-sm-7">{{ $bloodRequest->recepient_hospital }}</dd>
                     <dt class="col-sm-5 text-muted">Blood type</dt>
                     <dd class="col-sm-7">{{ $bloodRequest->blood_type }}</dd>
                     <dt class="col-sm-5 text-muted">Quantity</dt>

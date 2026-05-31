@@ -16,9 +16,9 @@ class WithdrawalController extends Controller
     public function index()
     {
         if (Auth::user()->role == 'admin') {
-            $withdrawals = Withdrawal::all();
+            $withdrawals = Withdrawal::where('bank_id', session('bank_id'))->get();
         } else {
-            $withdrawals = Withdrawal::where('user_id', Auth::id())->get();
+            $withdrawals = Withdrawal::where([['user_id', Auth::id()], ['bank_id', session('bank_id')]])->get();
         }
         if (request()->is('api/*')) {
             return response()->json($withdrawals);
@@ -44,19 +44,19 @@ class WithdrawalController extends Controller
             $Withdrawal=Withdrawal::create([
                 'user_id' => Auth::id(),
                 'bloodbag_id' => $bag->id,
-                'status' => 'requested',
+                'purpose'=>request('purpose')??'testing',
                 'bank_id' => request('bank_id')
             ]);
             $bag->status = 'requested';
             $bag->update();
             Activity::create([
                 'user_id' => Auth::id(),
-                'description' => 'Requested withdrawal of blood bag with DIN: '.$bag->din
+                'description' => 'Blood bag with DIN: '.$bag->din.' withdrawn for '. request('purpose') ?? 'testing'
             ]);
             BagTimeline::create([
                 'bag_id' => $bag->id,
                 'user_id' => Auth::id(),
-                'description' => 'Blood bag withdraw requested by '.Auth::user()->name
+                'description' => 'Blood bag withdraw requested by '.Auth::user()->name . ' for '. request('purpose') ?? 'testing'
             ]);
             if (request()->is('api/*')) {
                 return response()->json(['message' => 'Withdrawal Requested Successfully'],201);
