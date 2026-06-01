@@ -25,34 +25,35 @@ class HomeController extends Controller
         $errors = [];
         $bankData = ['label' => $bank->name, 'data' => []];
         foreach ($bloodTypes as $type) {
-            $quantity = 0;
             if ($bankId && $bank->id != $bankId && !($user && $user->is_admin)) {
                 $blood = collect();
             } else {
-                $blood = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type],['rhesus','!=','NT']])->get();
+                $bp = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type],['rhesus','Positive']])->whereIn('status',$status)->sum('volume');
+                $bn = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type], ['rhesus',  'Negative']])->whereIn('status',$status)->sum('volume');
             }
-            foreach ($blood as $bag) {
-                if (in_array($bag->status, $status)) {
-                    $quantity += $bag->volume;
-                }
-            }
+            
             $thresholds = json_decode($bank->threshold);
 
             foreach($thresholds as $threshold){
-                $q= 0;
-                if (str_contains($threshold->blood_group, $type)){
-                    $q += $threshold->threshold;
-                }
-                // return [$q,$quantity];
-                $message = "Blood group $type is below threshold  with quantity $quantity pints.";
-                if(str_contains($threshold->blood_group,$type) && $quantity < $q && !in_array($message,$errors)){
-                    $errors[] = $message;
-                }
+                $message = '';
+                 if($threshold->blood_group == $type.'-' && $bn<$threshold->threshold){
+                    $message = "Blood group $type- is below threshold  with quantity $bn pints.";
+                    if (!in_array($message, $errors)) {
+                        $errors[] = $message;
+                    }
+                 };
+                if ($threshold->blood_group == $type . '+' && $bp < $threshold->threshold) {
+                    $message = "Blood group $type+ is below threshold  with quantity $bp pints.";
+                    if (!in_array($message, $errors)) {
+                        $errors[] = $message;
+                    }
+                };
             }
-            $bankData['data'][] = $quantity;
+            $bankData['data'][] = $bp;
+            $bankData['data'][] = $bn;
         }
         $chartData[] = $bankData;
-        $typeLabels = $bloodTypes;
+        $typeLabels = ['A+','A-','B+','B-','AB+','AB-', 'O+','O-', 'NT'];
         $totalInventory = BloodInventory::where('collection_agency', $bank->name)->whereIn('status', $status)->sum('volume');
         $pendingRequests = BloodRequest::where([['status', 'pending'], ['donor_hospital', $bank->name]])->count();
         $totalUsers = User_bank::where('bank_id', $bankId)->count();

@@ -19,19 +19,17 @@ class AdminController extends Controller
         //     $item->volume += 13;
         //     $item->update();
         // }
-        $_banks = BloodBank::simplePaginate(25);
+        $_banks = BloodBank::when(request('search'), function ($query) {
+            $query->where('name', 'like', '%' . request('search') . '%');
+        })->simplePaginate(25);
         $status = ['available', 'tested', 'not_tested'];
-        $bloodgroups = ['A', 'B', 'O', 'AB'];
+        $bloodgroups = ['A', 'B', 'AB', 'O'];
         $banks = collect();
         foreach ($_banks as $bank) {
             $inventories = [];
             foreach ($bloodgroups as $group) {
-                $qp = BloodInventory::where([
-                    ['collection_agency', $bank->name],
-                    ['blood_type', $group],['rhesus', 'Positive']])->whereIn('status',$status)->sum('volume');
-                $qn = BloodInventory::where([
-                    ['collection_agency', $bank->name],
-                    ['blood_type', $group],['rhesus', 'Negative']])->whereIn('status',$status)->sum('volume');
+                $qp = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $group], ['rhesus', 'Positive']])->whereIn('status', $status)->sum('volume');
+                $qn = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $group], ['rhesus',  'Negative']])->whereIn('status', $status)->sum('volume');
                 array_push($inventories, [
                     'blood_group' => $group . '+',
                     'quantity' => $qp,
@@ -74,5 +72,19 @@ class AdminController extends Controller
         }
         session(['bank_id' => (int) $bankId]);
         return redirect()->route('dashboard');
+    }
+
+    public function searchBanks()
+    {
+        $term = request('q');
+
+        $banks = BloodBank::when($term, function ($query) use ($term) {
+            $query->where('name', 'like', '%' . $term . '%');
+        })
+        ->orderBy('name')
+        ->limit(15)
+        ->get(['id', 'name']);
+
+        return response()->json(['banks' => $banks]);
     }
 }

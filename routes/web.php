@@ -29,6 +29,7 @@ Route::group(['middleware' => ['web']], function () {
 
         // Admin routes
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/banks/search', [AdminController::class, 'searchBanks'])->name('admin.banks.search');
         Route::post('/admin/login-as/{bankId}', [AdminController::class, 'loginAs'])->name('admin.login_as');
 
 
