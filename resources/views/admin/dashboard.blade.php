@@ -6,16 +6,16 @@
     <div class="col-12 mb-4">
         <div class="card h-100 mb-3">
             <div class="card-header d-flex justify-content-between">
-                <span class="fw-bold">{{ $bank->name }}</span>
+                <span class="fw-bold">{{ $bank['name'] }}</span>
                 <div class="d-flex justify-content-end">
                     <div class="me-2">
-                        {{ $bank->users->count() }} <i class="bi bi-people"></i>
+                        {{ $bank['users'] }} <i class="bi bi-people"></i>
                     </div>
                     <div class="me-2">
-                        {{ $bank->withdrawals->count() }} <i class="bi bi-box-arrow-up"></i>
+                        {{ $bank['withdrawals'] }} <i class="bi bi-box-arrow-up"></i>
                     </div>
                     <div class="me-2">
-                        {{ $bank->requests->count() }} <i class="bi bi-question-circle"></i>
+                        {{ $bank['requests'] }} <i class="bi bi-question-circle"></i>
                     </div>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
@@ -40,28 +40,23 @@
                     </div>
                     <div>
                         <p class="text-muted small mb-0">Blood Bank</p>
-                        <strong>{{ $bank->name }}</strong>
+                        <strong>{{ $bank['name'] }}</strong>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
 
-                    @forelse (json_decode($bank->threshold) as $item)
-                    @php
-                    $_item = preg_split('/(?=[+-])/', $item->blood_group);
-                    $bg = $_item[0];
-                    $rf = $_item[1]=='+' ? 'Positive' : 'Negative';
-                    $level = floor(($bank->inventories->where('blood_type', $bg)->where('rhesus', $rf)->sum('volume') / $item->threshold)*50);
-
-                    @endphp
+                    @forelse ($bank['inventory'] as $item)
+                    <?php $level = floor(($item['quantity']/ $item['threshold'])*100);
+                    ?>
                     <div class="col-md-4 col-6 mb-2">
                         <div class="row">
                             <div class="col-2  d-flex align-items-center">
-                                <span class="badge bg-secondary">{{ $item->blood_group}}</span>
+                                <span class="badge bg-secondary">{{ $item['blood_group']}}</span>
                             </div>
                             <div class="col-8">
                                 <div class="progress {{ $level<50?'bg-danger':($level<75?'bg-warning':'bg-success') }}" role="progressbar" aria-label="Animated striped example" aria-valuenow="{{$level??0}} " aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar bg-success" style="width: {{ $level }}%"></div>
+                                    <div class="progress-bar bg-success" style="width: {{ $level }}%">{{ $level }}%</div>
                                 </div>
                             </div>
                         </div>
@@ -75,10 +70,10 @@
                 </div>
             </div>
             <div class="p-3 text-end">
-                <form method="POST" action="{{ route('admin.login_as', $bank->id) }}">
+                <form method="POST" action="{{ route('admin.login_as', $bank['id']) }}">
                     @csrf
                     <button class="btn btn-sm btn-success">
-                        Login to {{ $bank->name }}
+                        Login to {{ $bank['name'] }}
                     </button>
                 </form>
             </div>
@@ -98,7 +93,7 @@
     </div>
     @endforelse
     <div class="text-center">
-        {{ $banks->links() }}
+        {{ $_banks->links() }}
     </div>
 </div>
 @endsection

@@ -15,22 +15,7 @@ class BloodBankController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role == 'SuperAdmin') {
-            $banks = BloodBank::paginate(25);
-        } else {
-            $ids = Auth::user()->blood_banks->pluck('bank_id')->toArray();
-            $banks = BloodBank::whereIn('id', $ids)->paginate(25);
-        }
-        if (request()->is('api/*')) {
-            $_banks = [];
-            foreach ($banks as $bank) {
-                array_push($_banks, [
-                    'id' => $bank->id,
-                    'name' => $bank->name
-                ]);
-            }
-            return response()->json(['_banks' => $_banks, 'banks' => $banks]);
-        }
+        $banks = BloodBank::all();
         return view('bloodBank.index', compact('banks'));
     }
 

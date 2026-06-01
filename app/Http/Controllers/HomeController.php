@@ -26,11 +26,10 @@ class HomeController extends Controller
         $bankData = ['label' => $bank->name, 'data' => []];
         foreach ($bloodTypes as $type) {
             $quantity = 0;
-            // If user is scoped to a bank, only calculate for that bank
             if ($bankId && $bank->id != $bankId && !($user && $user->is_admin)) {
                 $blood = collect();
             } else {
-                $blood = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type]])->get();
+                $blood = BloodInventory::where([['collection_agency', $bank->name], ['blood_type', $type],['rhesus','!=','NT']])->get();
             }
             foreach ($blood as $bag) {
                 if (in_array($bag->status, $status)) {
@@ -53,7 +52,6 @@ class HomeController extends Controller
             $bankData['data'][] = $quantity;
         }
         $chartData[] = $bankData;
-
         $typeLabels = $bloodTypes;
         $totalInventory = BloodInventory::where('collection_agency', $bank->name)->whereIn('status', $status)->sum('volume');
         $pendingRequests = BloodRequest::where([['status', 'pending'], ['donor_hospital', $bank->name]])->count();
@@ -67,7 +65,7 @@ class HomeController extends Controller
                 'totalUsers' => $totalUsers,'errors' => $errors
             ]);
         }
-        // return [$chartData];
+        // return [$totalInventory];
         return view('home', compact('chartData', 'typeLabels', 'totalInventory', 'pendingRequests', 'requests', 'totalUsers','errors'));
     }
     public function report()

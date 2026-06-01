@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\BloodBankController;
 use App\Http\Controllers\BloodInventoryController;
 use App\Http\Controllers\BloodRequestController;
@@ -17,6 +18,9 @@ Route::controller(RelayStatusController::class)->group(function () {
 });
 Route::controller(HomeController::class)->group(function () {
     Route::get('/banks', 'banks');
+});
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin/dashboard', 'index');
 });
 Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function () {
     Route::controller(BloodInventoryController::class)->group(function(){
