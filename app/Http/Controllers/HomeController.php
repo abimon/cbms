@@ -64,7 +64,7 @@ class HomeController extends Controller
                 'totalInventory' => $totalInventory,
                 'pendingRequests' => $pendingRequests,
                 'totalUsers' => $totalUsers,'errors' => $errors
-            ]);
+            ],200);
         }
         // return [$totalInventory];
         return view('home', compact('chartData', 'typeLabels', 'totalInventory', 'pendingRequests', 'requests', 'totalUsers','errors'));

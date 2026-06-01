@@ -59,7 +59,7 @@ class AdminController extends Controller
             $banks->push($data);
         }
         if (request()->is('api/*')) {
-            return response()->json(['banks' => $banks]);
+            return response()->json(['banks' => $banks],200);
         }
         return view('admin.dashboard', compact('banks','_banks'));
     }
