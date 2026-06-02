@@ -310,6 +310,12 @@ class BloodInventoryController extends Controller
             return view('blood-inventories.index', compact('bloodInventories'));
         }
     }
+    public function sendMessage(){
+        $message = 'hello';
+        $phone  = '0701583806';
+        $res = Http::get('https://cbms.apetechinc.com/sendSms/'.$phone.'/'.$message);
+        return $res->json();
+    }
 
     public function sendSMS( String $phone, String $message)
     {
