@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\User_bank;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,15 @@ class UserBankController extends Controller
      */
     public function index()
     {
-        //
+        if(request('bank_id')==null){
+            return response()->json(['message' => 'Bank ID is required'], 400);
+        }
+        $bank_users = User_bank::where('bank_id', request('bank_id'))->with('user')->get();
+        $users = User::whereIn('id', $bank_users->pluck('user_id')->toArray())->get();
+        if (request()->is('api/*')) {
+            return response()->json(['users' => $users], 200);
+        }
+        return view('bank_users.index', compact('users'));
     }
 
     /**

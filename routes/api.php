@@ -7,6 +7,7 @@ use App\Http\Controllers\BloodRequestController;
 use App\Http\Controllers\BloodStorageController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RelayStatusController;
+use App\Http\Controllers\UserBankController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Route;
@@ -16,13 +17,17 @@ Route::controller(RelayStatusController::class)->group(function () {
     Route::get('/confirm-relay', 'actuate');
     Route::post('/relay-status/store','store')->middleware('auth:sanctum');
 });
-Route::controller(HomeController::class)->group(function () {
-    Route::get('/banks', 'banks');
-});
-Route::controller(AdminController::class)->group(function () {
-    Route::get('/admin/dashboard', 'index');
-});
 Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function () {
+
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/banks', 'banks');
+    });
+    Route::controller(AdminController::class)->group(function () {
+        Route::get('/admin/dashboard', 'index');
+    });
+    Route::controller(UserBankController::class)->group(function () {
+        Route::get('/bank_users', 'index');
+    });
     Route::controller(BloodInventoryController::class)->group(function(){
         Route::get('/dashboard/{bank_id}','dashboard');
         Route::get('/query', 'query');
