@@ -31,6 +31,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/banks/search', [AdminController::class, 'searchBanks'])->name('admin.banks.search');
         Route::post('/admin/login-as/{bankId}', [AdminController::class, 'loginAs'])->name('admin.login_as');
+        Route::get('/reports', [HomeController::class, 'reportsPage'])->name('reports');
 
 
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');

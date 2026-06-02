@@ -14,8 +14,12 @@ class UserBankController extends Controller
     public function index()
     {
         if(request('bank_id')==null){
+             if (request()->is('api/*')) {
+                return response()->json(['message' => 'Bank ID is required'], 400);
+            }
             return response()->json(['message' => 'Bank ID is required'], 400);
         }
+
         $bank_users = User_bank::where('bank_id', request('bank_id'))->with('user')->get();
         $users = User::whereIn('id', $bank_users->pluck('user_id')->toArray())->get();
         if (request()->is('api/*')) {

@@ -65,6 +65,9 @@
         <li class="nav-item">
             <a class="nav-link {{ request()->path()=='dashboard'?'active':'' }}" href="{{ route('dashboard') }}">Dashboard</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->path()=='reports'?'active':'' }}" href="{{ route('reports') }}">Reports</a>
+        </li>
         <div class="sidebar-section">
             <h6 class="sidebar-section-title">Blood Management</h6>
         </div>
