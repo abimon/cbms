@@ -36,12 +36,16 @@ class BloodInventoryController extends Controller
     {
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
+        $bank= BloodBank::findOrFail(request('bank_id'));
+        if(!$bank){
+            return response()->json(['message' => 'Bank not found'],404);
+        }
         $nt = 0;
         $status = ['available', 'tested', 'not_tested'];
         foreach ($bloodgroups as $bloodgroup) {
             $neg = 0;
             $pos = 0;
-            $blood = BloodInventory::where('blood_type', $bloodgroup)->get();
+            $blood = BloodInventory::where([['blood_type', $bloodgroup],['collection_agency', $bank->name]])->get();
             foreach ($blood as $bag) {
                 if (in_array($bag->status, $status)) {
                     if ($bag->rhesus == 'Negative') {

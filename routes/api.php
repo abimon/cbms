@@ -24,7 +24,7 @@ Route::controller(AdminController::class)->group(function () {
 });
 Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function () {
     Route::controller(BloodInventoryController::class)->group(function(){
-        Route::get('/dashboard','dashboard');
+        Route::get('/dashboard/{bank_id}','dashboard');
         Route::get('/query', 'query');
     });
     
