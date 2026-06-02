@@ -71,14 +71,13 @@ class HomeController extends Controller
     }
     public function reportsPage()
     {
-        $bankId = request('bank_id');
-        $selectedBank = $bankId ? BloodBank::find($bankId) : null;
+        $selectedBank = BloodBank::findOrFail(session('bank_id'));
         $banks = BloodBank::orderBy('name')->get();
 
         $status = ['available', 'tested', 'not_tested'];
         $bloodGroups = ['A+','A-','B+','B-','AB+','AB-','O+','O-','NT'];
 
-        $inventoryByGroup = BloodInventory::whereIn('status', $status)
+        $inventoryByGroup = BloodInventory::where('collection_agency',$selectedBank->name)->whereIn('status', $status)
             ->selectRaw("CASE WHEN blood_type = 'NT' THEN 'NT' ELSE blood_type|| rhesus END as blood_group")
             ->selectRaw('SUM(volume) as total')
             ->groupBy('blood_group')
@@ -89,12 +88,12 @@ class HomeController extends Controller
         //     $inventoryByGroup[$group] = $inventoryByGroup[$group] ?? 0;
         // }
 
-        $requestStats = BloodRequest::selectRaw('status, count(*) as total')
+        $requestStats = BloodRequest::where('collection_agency',$selectedBank->name)->selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
 
-        $withdrawalStats = Withdrawal::selectRaw('status, count(*) as total')
+        $withdrawalStats = Withdrawal::where('collection_agency',$selectedBank->name)->selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
@@ -106,37 +105,7 @@ class HomeController extends Controller
         $selectedBankWithdrawals = [];
         $selectedBankTotals = null;
 
-        if ($selectedBank) {
-            $selectedBankInventory = BloodInventory::where('collection_agency', $selectedBank->name)
-                ->whereIn('status', $status)
-                ->selectRaw("CASE WHEN blood_type = 'NT' THEN 'NT' ELSE blood_type|| rhesus END as blood_group")
-                ->selectRaw('SUM(volume) as total')
-                ->groupBy('blood_group')
-                ->pluck('total', 'blood_group')
-                ->toArray();
-
-            // foreach ($bloodGroups as $group) {
-            //     $selectedBankInventory[$group] = $selectedBankInventory[$group] ?? 0;
-            // }
-
-            $selectedBankRequests = BloodRequest::where('donor_hospital', $selectedBank->name)
-                ->selectRaw('status, count(*) as total')
-                ->groupBy('status')
-                ->pluck('total', 'status')
-                ->toArray();
-
-            $selectedBankWithdrawals = Withdrawal::where('bank_id', $selectedBank->id)
-                ->selectRaw('status, count(*) as total')
-                ->groupBy('status')
-                ->pluck('total', 'status')
-                ->toArray();
-
-            $selectedBankTotals = [
-                'inventory' => array_sum($selectedBankInventory),
-                'pending_requests' => $selectedBankRequests['pending'] ?? 0,
-                'active_users' => User_bank::where('bank_id', $selectedBank->id)->count(),
-            ];
-        }
+        
 
         if (request()->is('api/*')) {
             return response()->json([

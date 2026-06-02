@@ -9,6 +9,7 @@ use App\Models\BloodBank;
 use App\Models\BloodStorage;
 use App\Models\User_bank;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class BloodInventoryController extends Controller
 {
@@ -308,5 +309,21 @@ class BloodInventoryController extends Controller
         } else {
             return view('blood-inventories.index', compact('bloodInventories'));
         }
+    }
+
+    public function sendSMS( String $phone, String $message)
+    {
+        $data = [
+            'mobile' => '+254701583807',
+            'response_type' => 'json',
+            'sender_name' => 'FULL_CIRCLE',
+            'service_id' => 0,
+            'message' => "This is a message.\n\nRegards\nMobitech Technologies Ltd",
+        ];
+        $response = Http::withHeaders([
+            'h_api_key' => '295c66447880820d5ac3feb45436664298f8763c2388da04fd7d8db8d0b74b5c',
+        ])->post('https://app.mobitechtechnologies.com//sms/sendsms', $data);
+
+        return $response->json();
     }
 }

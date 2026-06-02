@@ -4,35 +4,24 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
         <div>
             <h2 class="mb-1">Reports</h2>
-            <p class="text-muted mb-0">Overview and per-bank reports with printable and exportable charts and tables.</p>
+
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-outline-primary" onclick="printReport()">Print / PDF</button>
-            <button type="button" class="btn btn-outline-success" onclick="exportCurrentTab('csv')">Export CSV</button>
-            <button type="button" class="btn btn-outline-success" onclick="exportCurrentTab('xls')">Export Excel</button>
-        </div>
+
     </div>
 
     <div class="card p-4 mb-4" id="printable-area">
-        <form method="GET" action="{{ route('reports') }}" class="row g-3 align-items-end mb-4">
-            <div class="col-md-4">
-                <label for="bank_id" class="form-label">Bank</label>
-                <select id="bank_id" name="bank_id" class="form-select">
-                    <option value="">All banks</option>
-                    @foreach($banks as $bank)
-                    <option value="{{ $bank->id }}" {{ isset($selectedBank) && $selectedBank->id === $bank->id ? 'selected' : '' }}>{{ $bank->name }}</option>
-                    @endforeach
-                </select>
+
+        <div class="d-flex justified-content-between">
+            <div class="">
+                <h3>{{ $selectedBank->name }} Bank Reports</h3>
+                <p class="text-muted mb-0">Overview and per-bank reports with printable and exportable charts and tables.</p>
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">Load</button>
+            <div class="">
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="printReport()">Print / PDF</button>
+                <button type="button" class="btn btn-sm btn-outline-success" onclick="exportCurrentTab('csv')">Export CSV</button>
+                <button type="button" class="btn btn-sm btn-outline-success" onclick="exportCurrentTab('xls')">Export Excel</button>
             </div>
-            @if(isset($selectedBank))
-            <div class="col-auto align-self-center">
-                <span class="badge bg-info text-dark">Showing: {{ $selectedBank->name }}</span>
-            </div>
-            @endif
-        </form>
+        </div>
 
         <ul class="nav nav-pills mb-4" id="report-tabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -47,15 +36,12 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="withdrawals-tab" data-bs-toggle="pill" data-bs-target="#withdrawals" type="button" role="tab">Withdrawals</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="banks-tab" data-bs-toggle="pill" data-bs-target="#banks" type="button" role="tab">Bank Summary</button>
-            </li>
         </ul>
 
         <div class="tab-content" id="report-tabs-content">
             <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                 <div class="row gy-4">
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Total Inventory</h5>
@@ -64,7 +50,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Pending Requests</h5>
@@ -73,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 mb-3">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Open Withdrawals</h5>
@@ -93,8 +79,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-8 mb-4 row">
-                        <div class="col-md-6  mb-4 h-50">
+                    <div class="col-lg-8  row h-100">
+                        <div class="col-md-6  mb-4 h-100">
                             <div class="card">
                                 <div class="card-header">Request status</div>
                                 <div class="card-body">
@@ -102,7 +88,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-4 h-50">
+                        <div class="col-md-6 mb-4 h-100">
                             <div class="card">
                                 <div class="card-header">Withdrawal status</div>
                                 <div class="card-body">
@@ -267,60 +253,6 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="banks" role="tabpanel" aria-labelledby="banks-tab">
-                <div class="card">
-                    <div class="card-header">Bank summary</div>
-                    <div class="card-body table-responsive">
-                        <table class="table table-striped" id="bank-summary-table">
-                            <thead>
-                                <tr>
-                                    <th>Bank</th>
-                                    <th>Users</th>
-                                    <th>Requests</th>
-                                    <th>Withdrawals</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($bankSummaries as $bank)
-                                <tr>
-                                    <td>{{ $bank->name }}</td>
-                                    <td>{{ $bank->users_count }}</td>
-                                    <td>{{ $bank->requests_count }}</td>
-                                    <td>{{ $bank->withdrawals_count }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                @if(isset($selectedBankTotals))
-                <div class="card mt-4">
-                    <div class="card-header">Selected bank totals</div>
-                    <div class="card-body">
-                        <div class="row gy-3">
-                            <div class="col-md-4">
-                                <div class="border rounded p-3">
-                                    <h6>Total inventory</h6>
-                                    <p class="mb-0">{{ $selectedBankTotals['inventory'] }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3">
-                                    <h6>Pending requests</h6>
-                                    <p class="mb-0">{{ $selectedBankTotals['pending_requests'] }}</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3">
-                                    <h6>Active users</h6>
-                                    <p class="mb-0">{{ $selectedBankTotals['active_users'] }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @endif
-            </div>
         </div>
     </div>
 </div>
@@ -354,7 +286,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const bloodGroups = @json($bloodGroups);
-    const inventoryValues = {{json_encode(array_values($inventoryByGroup))}};
+    const inventoryValues = @json(array_values($inventoryByGroup));
     const requestStatuses = @json(array_keys($requestStats));
     const requestCounts = @json(array_values($requestStats));
     const withdrawalStatuses = @json(array_keys($withdrawalStats));
