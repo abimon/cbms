@@ -314,11 +314,11 @@ class BloodInventoryController extends Controller
     public function sendSMS( String $phone, String $message)
     {
         $data = [
-            'mobile' => '+254701583807',
+            'mobile' => $phone,
             'response_type' => 'json',
             'sender_name' => 'FULL_CIRCLE',
             'service_id' => 0,
-            'message' => "This is a message.\n\nRegards\nMobitech Technologies Ltd",
+            'message' => $message,
         ];
         $response = Http::withHeaders([
             'h_api_key' => '295c66447880820d5ac3feb45436664298f8763c2388da04fd7d8db8d0b74b5c',
