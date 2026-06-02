@@ -25,7 +25,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/home', function () {
         return redirect('/dashboard');
     })->name('home');
-    Route::get('sendSms/{phone}/{message}', [BloodInventoryController::class, 'sendSMS'])->name('send.sms');
+    // Route::get('sendSms/{phone}/{message}', [BloodInventoryController::class, 'sendSMS'])->name('send.sms');
     Route::middleware(['auth','verified', 'isVerified'])->group(function () {
 
         // Admin routes
