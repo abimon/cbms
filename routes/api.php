@@ -49,7 +49,7 @@ Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function ()
 
 // use auth routes for API
 Route::controller(UserController::class)->group(function () {
-    Route::post('/register', 'register');
+    Route::post('/register', 'register')->middleware('auth:sanctum');
     Route::post('/login', 'login');
     Route::post('/forgot-password', 'forgotPassword');
     Route::post('/reset-password', 'resetPassword');

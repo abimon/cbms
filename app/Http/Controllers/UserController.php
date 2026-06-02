@@ -37,10 +37,9 @@ class UserController extends Controller
             $user = User::create($validated);
             if (request()->is('api/*')) {
                 return response()->json([
-                    'message' => 'User registered successfully. Kindly verify your email',
+                    'message' => $user->name . " registered successfully.",
                     'status' => 'Success',
-                    'data' => $user,
-                    'token'=> $user->createToken('auth_token')->plainTextToken
+                    'user' => $user->name,
                 ], 201);
             }
             return back()->with('message', 'User registered successfully. Kindly verify your email');
@@ -78,6 +77,12 @@ class UserController extends Controller
                     return response()->json(['message' => 'Wrong password'], 401);
                 }
                 return back()->with('message', 'Wrong password');
+            }
+            if($user->email_verified_at == null){
+                if (request()->is('api/*')) {
+                    return response()->json(['message' => 'Email not verified'], 401);
+                }
+                return back()->with('message', 'Email not verified');
             }
             if (request()->is('api/*')) {
 
