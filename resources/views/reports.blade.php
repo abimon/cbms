@@ -17,8 +17,8 @@
                 <p class="text-muted mb-0">Overview and per-bank reports with printable and exportable charts and tables.</p>
             </div>
             <div class="">
+                <a href="/emailreport" style="text-decoration: none;"><button type="button" class="btn btn-sm btn-outline-success">Email Report Summary</button></a>
                 <button type="button" class="btn btn-sm btn-outline-primary" onclick="printReport()">Print / PDF</button>
-                <button type="button" class="btn btn-sm btn-outline-success" onclick="exportCurrentTab('csv')">Export CSV</button>
                 <button type="button" class="btn btn-sm btn-outline-success" onclick="exportCurrentTab('xls')">Export Excel</button>
             </div>
         </div>

@@ -187,10 +187,10 @@ class HomeController extends Controller
         Mail::send(
             'reports.inventory',
             $data,
-            function ($message) use ($pdf) {
-                $message->to('ebiconprojects2022@gmail.com', 'Edimon')->subject('Inventory Report as at ' . date('jS F Y H:i:s'));
+            function ($message) {
+                $message->to(Auth::user()->email, Auth::user()->name)->subject('Inventory Report as at ' . date('jS F Y H:i:s'));
             }
         );
-        return $pdf->stream('inventory.pdf');
+        return back()->with('success', 'Report sent successfully');
     }
 }
