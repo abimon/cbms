@@ -8,7 +8,10 @@ use App\Models\BloodBank;
 use App\Models\BloodRequest;
 use App\Models\User_bank;
 use App\Models\Withdrawal;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -84,16 +87,12 @@ class HomeController extends Controller
             ->pluck('total', 'blood_group')
             ->toArray();
 
-        // foreach ($bloodGroups as $group) {
-        //     $inventoryByGroup[$group] = $inventoryByGroup[$group] ?? 0;
-        // }
-
-        $requestStats = BloodRequest::where('collection_agency',$selectedBank->name)->selectRaw('status, count(*) as total')
+        $requestStats = BloodRequest::where('donor_hospital',$selectedBank->name)->selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
 
-        $withdrawalStats = Withdrawal::where('collection_agency',$selectedBank->name)->selectRaw('status, count(*) as total')
+        $withdrawalStats = Withdrawal::where('bank_id',$selectedBank->id)->selectRaw('status, count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
@@ -171,5 +170,27 @@ class HomeController extends Controller
                 'banks' => $banks
             ]);
         }
+    }
+    public function exportReport(){
+        $selectedBank = BloodBank::findOrFail(session('bank_id'));
+        $status = ['available', 'tested', 'not_tested'];
+
+        $inventoryByGroup = BloodInventory::where('collection_agency', $selectedBank->name)->whereIn('status', $status)
+            ->selectRaw("CASE WHEN blood_type = 'NT' THEN 'NT' ELSE blood_type||rhesus END as blood_group")
+            ->selectRaw('SUM(volume) as total')
+            ->groupBy('blood_group')
+            ->pluck('total', 'blood_group')
+            ->toArray();
+        $pdf= Pdf::loadView('reports.inventory',compact('inventoryByGroup','selectedBank'));
+        $pdf->setPaper('A4', 'landscape');
+        $data = compact('inventoryByGroup', 'selectedBank');
+        Mail::send(
+            'reports.inventory',
+            $data,
+            function ($message) use ($pdf) {
+                $message->to('ebiconprojects2022@gmail.com', 'Edimon')->subject('Inventory Report as at ' . date('jS F Y H:i:s'));
+            }
+        );
+        return $pdf->stream('inventory.pdf');
     }
 }

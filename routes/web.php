@@ -33,7 +33,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('/admin/banks/search', [AdminController::class, 'searchBanks'])->name('admin.banks.search');
         Route::post('/admin/login-as/{bankId}', [AdminController::class, 'loginAs'])->name('admin.login_as');
         Route::get('/reports', [HomeController::class, 'reportsPage'])->name('reports');
-
+        Route::get('/emailreport', [HomeController::class, 'exportReport'])->name('exportReport');
 
         Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
         Route::get('/blood-dashboard', [BloodInventoryController::class, 'dashboard'])->name('dashboard');

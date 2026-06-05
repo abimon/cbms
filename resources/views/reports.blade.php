@@ -122,7 +122,6 @@
                         </table>
                     </div>
                 </div>
-                @if(isset($selectedBank))
                 <div class="card mt-4">
                     <div class="card-header">{{ $selectedBank->name }} inventory breakdown</div>
                     <div class="card-body table-responsive">
@@ -144,7 +143,6 @@
                         </table>
                     </div>
                 </div>
-                @endif
             </div>
 
             <div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">

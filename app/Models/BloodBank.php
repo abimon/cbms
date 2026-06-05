@@ -8,10 +8,6 @@ class BloodBank extends Model
 {
     protected $fillable = ['name', 'location', 'contact_phone', 'email','threshold'];
 
-    public function bloodInventories()
-    {
-        return $this->hasMany(BloodInventory::class,'collection_agency','name');
-    }
     public function bloodRequests()
     {
         return $this->hasMany(BloodRequest::class,'donor_hospital','name');

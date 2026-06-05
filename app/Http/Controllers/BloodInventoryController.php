@@ -327,8 +327,8 @@ class BloodInventoryController extends Controller
             'message' => $message,
         ];
         $response = Http::withHeaders([
-            'h_api_key' => '295c66447880820d5ac3feb45436664298f8763c2388da04fd7d8db8d0b74b5c',
-        ])->post('https://app.mobitechtechnologies.com//sms/sendsms', $data);
+            'h_api_key' => env('SMS_API_KEY'),
+        ])->post(env('SMS_URL'), $data);
 
         return $response->json();
     }
