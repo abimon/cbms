@@ -17,9 +17,8 @@
                 <p class="text-muted mb-0">Overview and per-bank reports with printable and exportable charts and tables.</p>
             </div>
             <div class="">
-                <a href="/emailreport" style="text-decoration: none;"><button type="button" class="btn btn-sm btn-outline-success">Email Report Summary</button></a>
-                <button type="button" class="btn btn-sm btn-outline-primary" onclick="printReport()">Print / PDF</button>
-                <button type="button" class="btn btn-sm btn-outline-success" onclick="exportCurrentTab('xls')">Export Excel</button>
+                <a href="/emailreport?action=mail" style="text-decoration: none;"><button type="button" class="btn btn-sm btn-outline-success">Email Report Summary</button></a>
+                <a href="/emailreport?action=download" style="text-decoration: none;"><button type="button" class="btn btn-sm btn-outline-primary">Download PDF</button></a>
             </div>
         </div>
 
@@ -342,54 +341,5 @@
             }
         });
     });
-
-    function printReport() {
-        window.print();
-    }
-
-    function exportCurrentTab(format) {
-        if (format === 'pdf') {
-            return printReport();
-        }
-
-        const activePane = document.querySelector('.tab-pane.active');
-        if (!activePane) {
-            alert('No active report tab selected.');
-            return;
-        }
-
-        const table = activePane.querySelector('table');
-        if (!table) {
-            alert('No table available to export on this tab.');
-            return;
-        }
-
-        const csv = tableToCSV(table);
-        const fileName = `report-${document.title.toLowerCase().replace(/\s+/g, '-')}-${format}.${format}`;
-        const mimeType = format === 'xls' ? 'application/vnd.ms-excel;charset=utf-8;' : 'text/csv;charset=utf-8;';
-        downloadFile(fileName, csv, mimeType);
-    }
-
-    function tableToCSV(table) {
-        const rows = Array.from(table.querySelectorAll('tr'));
-        return rows.map(row => {
-            const cols = Array.from(row.querySelectorAll('th, td'));
-            return cols.map(col => '"' + col.innerText.trim().replace(/"/g, '""') + '"').join(',');
-        }).join('\r\n');
-    }
-
-    function downloadFile(filename, content, contentType) {
-        const blob = new Blob([content], {
-            type: contentType
-        });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
 </script>
 @endsection

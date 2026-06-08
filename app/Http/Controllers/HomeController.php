@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\BloodInventory;
 use App\Models\BloodBank;
 use App\Models\BloodRequest;
+use App\Models\User;
 use App\Models\User_bank;
 use App\Models\Withdrawal;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -184,13 +185,19 @@ class HomeController extends Controller
         $pdf= Pdf::loadView('reports.inventory',compact('inventoryByGroup','selectedBank'));
         $pdf->setPaper('A4', 'landscape');
         $data = compact('inventoryByGroup', 'selectedBank');
-        Mail::send(
-            'reports.inventory',
-            $data,
-            function ($message) {
-                $message->to(Auth::user()->email, Auth::user()->name)->subject('Inventory Report as at ' . date('jS F Y H:i:s'));
-            }
-        );
-        return back()->with('success', 'Report sent successfully');
+        if(request('action') == 'mail'){
+            $user = User::findOrFail(Auth::id());
+            Mail::send(
+                'reports.inventory',
+                $data,
+                function ($message) use($user) {
+                    $message->to($user->email, $user->name)->subject('Inventory Report as at ' . date('jS F Y H:i:s'));
+                }
+            );
+            return back()->with('success', 'Report Mailed successfully');
+        }else if(request('action') == 'download'){
+            return $pdf->download('inventory_report_' . date('Y_m_d_H_i_s') . '.pdf');
+        }
+        
     }
 }
