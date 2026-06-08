@@ -1,0 +1,1 @@
+<Here>Hello,<br>Here is the {{ $report }}</p>

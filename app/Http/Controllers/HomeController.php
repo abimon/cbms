@@ -184,14 +184,14 @@ class HomeController extends Controller
             ->toArray();
         $pdf= Pdf::loadView('reports.inventory',compact('inventoryByGroup','selectedBank'));
         $pdf->setPaper('A4', 'landscape');
-        $data = compact('inventoryByGroup', 'selectedBank');
+        $data = ['report'=>'Inventory Report'];
         if(request('action') == 'mail'){
             $user = User::findOrFail(Auth::id());
             Mail::send(
-                'reports.inventory',
+                'reports.message',
                 $data,
-                function ($message) use($user) {
-                    $message->to($user->email, $user->name)->subject('Inventory Report as at ' . date('jS F Y H:i:s'));
+                function ($message) use($user,$pdf) {
+                    $message->to($user->email, $user->name)->subject('Inventory Report as at ' . date('jS F Y H:i:s'))->attachData($pdf->output(), 'inventory_report_' . date('Y_m_d_H_i_s') . '.pdf');
                 }
             );
             return back()->with('success', 'Report Mailed successfully');
