@@ -19,7 +19,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $bankId = session('bank_id');
+        $bankId = session('bank_id')??request('bank_id');
         $user = Auth::user();
         $bank = BloodBank::find($bankId);
         $requests = BloodRequest::where('donor_hospital', $bank->name)->orderBy('created_at', 'desc')->take(10)->get();
@@ -75,7 +75,7 @@ class HomeController extends Controller
     }
     public function reportsPage()
     {
-        $selectedBank = BloodBank::findOrFail(session('bank_id'));
+        $selectedBank = BloodBank::findOrFail(session('bank_id')??request('bank_id'));
         $banks = BloodBank::orderBy('name')->get();
 
         $status = ['available', 'tested', 'not_tested'];
@@ -173,7 +173,7 @@ class HomeController extends Controller
         }
     }
     public function exportReport(){
-        $selectedBank = BloodBank::findOrFail(session('bank_id'));
+        $selectedBank = BloodBank::findOrFail(session('bank_id')??request('bank_id'));
         $status = ['available', 'tested', 'not_tested'];
 
         $inventoryByGroup = BloodInventory::where('collection_agency', $selectedBank->name)->whereIn('status', $status)

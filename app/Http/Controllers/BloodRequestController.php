@@ -15,10 +15,11 @@ class BloodRequestController extends Controller
 
         
         if(request()->is('api/*')){
-            $requests = BloodRequest::all();
+            $bankName = BloodBank::findOrFail(session('bank_id') ?? request('bank_id'))->name;
+            $requests = BloodRequest::where('collection_agency', $bankName)->get();
             return response()->json(['data' => $requests]);
         }else{
-            $bankName = BloodBank::findOrFail(session('bank_id'))->name;
+            $bankName = BloodBank::findOrFail(session('bank_id')??request('bank_id'))->name;
             $bloodRequests = BloodRequest::where('collection_agency', $bankName)->simplePaginate(10);
             return view('blood_requests.index', compact('bloodRequests'));
         }
