@@ -79,7 +79,7 @@ class HomeController extends Controller
         $banks = BloodBank::orderBy('name')->get();
 
         $status = ['available', 'tested', 'not_tested'];
-        $bloodGroups = ['A+','A-','B+','B-','AB+','AB-','O+','O-','NT'];
+        $bloodGroups = [];
 
         $inventoryByGroup = BloodInventory::where('collection_agency',$selectedBank->name)->whereIn('status', $status)
             ->selectRaw("CASE WHEN blood_type = 'NT' THEN 'NT' ELSE blood_type|| rhesus END as blood_group")
@@ -100,12 +100,20 @@ class HomeController extends Controller
 
         $bankSummaries = BloodBank::withCount(['users', 'requests', 'withdrawals'])->get();
 
-        $selectedBankInventory = array_fill_keys($bloodGroups, 0);
-        $selectedBankRequests = [];
-        $selectedBankWithdrawals = [];
-        $selectedBankTotals = null;
-
-        
+        $selectedBankInventory = [];
+        foreach($inventoryByGroup as $group => $total){
+            $search = ['Positive', 'Negative'];
+            $replace = ['+', '-'];
+            $selectedBankInventory[] = ['group' => str_replace($search, $replace, trim($group)), 'total' => $total];
+            $bloodGroups[] = str_replace($search, $replace, trim($group));
+        }
+        $allGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'NT'];
+        foreach($allGroups as $group){
+            if(!in_array($group, $bloodGroups)){
+                $selectedBankInventory[] = ['group' => $group, 'total' => 0];
+                $bloodGroups[] = $group;
+            }
+        }
 
         if (request()->is('api/*')) {
             return response()->json([
@@ -116,9 +124,6 @@ class HomeController extends Controller
                 'bankSummaries' => $bankSummaries,
                 'selectedBank' => $selectedBank,
                 'selectedBankInventory' => $selectedBankInventory,
-                'selectedBankRequests' => $selectedBankRequests,
-                'selectedBankWithdrawals' => $selectedBankWithdrawals,
-                'selectedBankTotals' => $selectedBankTotals,
             ]);
         }
 
@@ -131,9 +136,6 @@ class HomeController extends Controller
             'bankSummaries',
             'selectedBank',
             'selectedBankInventory',
-            'selectedBankRequests',
-            'selectedBankWithdrawals',
-            'selectedBankTotals'
         ));
     }
 

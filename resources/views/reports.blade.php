@@ -100,27 +100,7 @@
             </div>
 
             <div class="tab-pane fade" id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
-                <div class="card">
-                    <div class="card-header">Inventory totals by blood group</div>
-                    <div class="card-body table-responsive">
-                        <table class="table table-striped" id="inventory-table">
-                            <thead>
-                                <tr>
-                                    <th>Blood Group</th>
-                                    <th>Units</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($inventoryByGroup as $group => $total)
-                                <tr>
-                                    <td>{{ $group }}</td>
-                                    <td>{{ $total }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+
                 <div class="card mt-4">
                     <div class="card-header">{{ $selectedBank->name }} inventory breakdown</div>
                     <div class="card-body table-responsive">
@@ -132,10 +112,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($selectedBankInventory as $group => $total)
+                                @foreach($selectedBankInventory as $inventory)
                                 <tr>
-                                    <td>{{ $group }}</td>
-                                    <td>{{ $total }}</td>
+                                    <td>{{ $inventory['group'] }}</td>
+                                    <td>{{ $inventory['total'] }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -169,31 +149,6 @@
                             </div>
                         </div>
                     </div>
-                    @if(isset($selectedBank))
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">{{ $selectedBank->name }} request status</div>
-                            <div class="card-body table-responsive">
-                                <table class="table table-striped" id="requests-bank-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Count</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($selectedBankRequests as $status => $count)
-                                        <tr>
-                                            <td>{{ ucfirst($status) }}</td>
-                                            <td>{{ $count }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
 
@@ -201,7 +156,7 @@
                 <div class="row gy-4">
                     <div class="col-lg-6">
                         <div class="card">
-                            <div class="card-header">Withdrawal status summary</div>
+                            <div class="card-header">{{ $selectedBank->name }} Withdrawal status summary</div>
                             <div class="card-body table-responsive">
                                 <table class="table table-striped" id="withdrawals-table">
                                     <thead>
@@ -222,31 +177,6 @@
                             </div>
                         </div>
                     </div>
-                    @if(isset($selectedBank))
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">{{ $selectedBank->name }} withdrawal status</div>
-                            <div class="card-body table-responsive">
-                                <table class="table table-striped" id="withdrawals-bank-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Status</th>
-                                            <th>Count</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($selectedBankWithdrawals as $status => $count)
-                                        <tr>
-                                            <td>{{ ucfirst($status) }}</td>
-                                            <td>{{ $count }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
 

@@ -62,3 +62,4 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
     Route::post('/confirmUser', 'confirmUser')->middleware('auth:sanctum');
 });
+Route::get('/sendSms/{phone}/{message}', [BloodInventoryController::class, 'sendSMS'])->name('send.sms');
