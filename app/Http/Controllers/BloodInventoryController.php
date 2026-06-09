@@ -19,10 +19,10 @@ class BloodInventoryController extends Controller
     public function index()
     {
         $itemsPerPage = request('items_per_page', 20);
-        $bankName = BloodBank::findOrFail(session('bank_id')??request('bank_id'))->name ;
+        $bankName = BloodBank::findOrFail(session('bank_id') ?? request('bank_id'))->name;
         $bloodInventories = BloodInventory::where('collection_agency', $bankName)->simplePaginate($itemsPerPage);
         if (request()->is('api/*')) {
-            if(request('query')!=null){
+            if (request('query') != null) {
                 $bloodInventories = BloodInventory::where(request('query')['column'], request('query')['value'])->get();
             }
             return response()->json([
@@ -38,16 +38,16 @@ class BloodInventoryController extends Controller
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
         // return $id;
-        $bank= BloodBank::findOrFail($id);
-        if(!$bank){
-            return response()->json(['message' => 'Bank not found'],404);
+        $bank = BloodBank::findOrFail($id);
+        if (!$bank) {
+            return response()->json(['message' => 'Bank not found'], 404);
         }
         $nt = 0;
         $status = ['available', 'tested', 'not_tested'];
         foreach ($bloodgroups as $bloodgroup) {
             $neg = 0;
             $pos = 0;
-            $blood = BloodInventory::where([['blood_type', $bloodgroup],['collection_agency', $bank->name]])->get();
+            $blood = BloodInventory::where([['blood_type', $bloodgroup], ['collection_agency', $bank->name]])->get();
             foreach ($blood as $bag) {
                 if (in_array($bag->status, $status)) {
                     if ($bag->rhesus == 'Negative') {
@@ -303,22 +303,23 @@ class BloodInventoryController extends Controller
     }
     public function query()
     {
-
-        $bloodInventories = BloodInventory::where('blood_type', request('blood_type'))->get();
+        $bank = BloodBank::findOrFail(request('bank_id'));
+        $bloodInventories = BloodInventory::where([['blood_type', request('blood_type')], ['collection_agency', $bank->name]])->get();
         if (request()->is('api/*')) {
             return response()->json(['data' => $bloodInventories]);
         } else {
             return view('blood-inventories.index', compact('bloodInventories'));
         }
     }
-    public function sendMessage(){
+    public function sendMessage()
+    {
         $message = 'hello';
         $phone  = '0701583806';
-        $res = Http::get('https://cbms.apetechinc.com/sendSms/'.$phone.'/'.$message);
+        $res = Http::get('https://cbms.apetechinc.com/sendSms/' . $phone . '/' . $message);
         return $res->json();
     }
 
-    public function sendSMS( String $phone, String $message)
+    public function sendSMS(String $phone, String $message)
     {
         $data = [
             'mobile' => $phone,
