@@ -33,11 +33,11 @@ class BloodInventoryController extends Controller
         }
         return view('blood_inventories.index', compact('bloodInventories'));
     }
-    public function dashboard()
+    public function dashboard($id)
     {
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
-        $bank= BloodBank::findOrFail(request('bank_id'));
+        $bank= BloodBank::findOrFail($id);
         if(!$bank){
             return response()->json(['message' => 'Bank not found'],404);
         }
