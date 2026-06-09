@@ -303,10 +303,7 @@ class BloodInventoryController extends Controller
     public function query()
     {
         $bank = BloodBank::findOrFail(request('bank_id'));
-        $bloodType = request('blood_type');
-        $bloodGroup = preg_split('/(?=[+-])/', $bloodType);
-        return [$bloodType,$bloodGroup];
-        $bloodInventories = BloodInventory::where([['blood_type', $bloodGroup[0]], ['rhesus', $bloodGroup[1]], ['collection_agency', $bank->name]])->get();
+        $bloodInventories = BloodInventory::where([['blood_type', request('blood_type')], ['rhesus', request('rhesus')], ['collection_agency', $bank->name]])->get();
         if (request()->is('api/*')) {
             return response()->json(['data' => $bloodInventories]);
         } else {
