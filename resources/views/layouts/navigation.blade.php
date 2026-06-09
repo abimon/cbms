@@ -57,7 +57,7 @@
     </div>
     <ul class="navbar-nav me-auto">
 
-        @if(auth()->user()->role=='Admin')
+        @if(auth()->user()->role=='Superadmin')
         <li class="nav-item">
             <a class="nav-link {{ request()->is('admin/*')?'active':'' }}" href="{{ route('admin.dashboard') }}">Administrator</a>
         </li>

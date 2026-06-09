@@ -30,15 +30,15 @@ class isVerified
         }
 
         // Super admin may access without bank association
-        if ($user->is_admin) {
+        if ($user->role == 'Superadmin') {
             return $next($request);
         }
 
         // Ensure user is associated with an approved bank
-        $userBank = $user->blood_banks()->where('status', 'approved')->first();
+        $userBank = $user->blood_bank;
         if (! $userBank) {
             Auth::logout();
-            return redirect('/error?error=403');
+            abort(403, 'User is not associated with any blood bank.');
         }
 
         // set current tenant bank in session

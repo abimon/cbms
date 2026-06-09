@@ -48,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
-    protected function blood_banks(){
+    protected function blood_bank(){
         return $this->belongsTo(User_bank::class,'id','user_id');
     }
 }

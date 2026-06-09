@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             'phone' => '0701583807',
             'avatar' => null,
             'is_verified' => true,
-            'role' => 'Admin',
+            'role' => 'Superadmin',
             'is_admin' => true,
             'email_verified_at' => now(),
             'password' =>  Hash::make('Admin@1234'),

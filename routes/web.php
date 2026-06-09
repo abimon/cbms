@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\AdminController;
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', function () {
         if (Auth::check()) {
-            if (Auth::user()->role == 'Admin') {
+            if (Auth::user()->role == 'Superadmin') {
                 return redirect()->route('admin.dashboard');
             }
             return redirect('/dashboard');
@@ -29,9 +29,11 @@ Route::group(['middleware' => ['web']], function () {
     Route::middleware(['auth','verified', 'isVerified'])->group(function () {
 
         // Admin routes
-        Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-        Route::get('/admin/banks/search', [AdminController::class, 'searchBanks'])->name('admin.banks.search');
-        Route::post('/admin/login-as/{bankId}', [AdminController::class, 'loginAs'])->name('admin.login_as');
+        Route::middleware('isSuperadmin')->group(function () {
+            Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+            Route::get('/admin/banks/search', [AdminController::class, 'searchBanks'])->name('admin.banks.search');
+            Route::post('/admin/login-as/{bankId}', [AdminController::class, 'loginAs'])->name('admin.login_as');
+        });
         Route::get('/reports', [HomeController::class, 'reportsPage'])->name('reports');
         Route::get('/emailreport', [HomeController::class, 'exportReport'])->name('exportReport');
 

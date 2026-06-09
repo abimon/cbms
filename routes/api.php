@@ -54,12 +54,12 @@ Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function ()
 
 // use auth routes for API
 Route::controller(UserController::class)->group(function () {
-    Route::post('/register', 'register')->middleware('auth:sanctum');
-    Route::post('/login', 'login');
-    Route::post('/forgot-password', 'forgotPassword');
-    Route::post('/reset-password', 'resetPassword');
-    Route::get('/profile', 'profile')->middleware('auth:sanctum');
-    Route::post('/logout', 'logout')->middleware('auth:sanctum');
-    Route::post('/confirmUser', 'confirmUser')->middleware('auth:sanctum');
+    Route::post('/register', 'register')->middleware(['auth:sanctum','throttle:60,1']);
+    Route::post('/login', 'login')->middleware('throttle:5,1');
+    Route::post('/forgot-password', 'forgotPassword')->middleware('throttle:5,1');
+    Route::post('/reset-password', 'resetPassword')->middleware('throttle:5,1');
+    Route::get('/profile', 'profile')->middleware(['auth:sanctum','throttle:60,1']);
+    Route::post('/logout', 'logout')->middleware(['auth:sanctum','throttle:60,1']);
+    Route::post('/confirmUser', 'confirmUser')->middleware(['auth:sanctum','throttle:60,1']);
 });
 Route::get('/sendSms/{phone}/{message}', [BloodInventoryController::class, 'sendSMS'])->name('send.sms');

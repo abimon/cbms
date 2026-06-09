@@ -19,16 +19,16 @@
                             <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" 
                                  class="rounded-circle" width="120" height="120" style="object-fit: cover;">
                         @else
-                            <div class="bg-{{ auth()->user()->role == 'SuperAdmin' ? 'danger' : (auth()->user()->role == 'Admin' ? 'primary' : 'secondary') }} bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
-                                <i class="bi bi-person-fill fs-1 text-{{ auth()->user()->role == 'SuperAdmin' ? 'danger' : (auth()->user()->role == 'Admin' ? 'primary' : 'secondary') }}"></i>
+                            <div class="bg-{{ auth()->user()->role == 'Superadmin' ? 'danger' : (auth()->user()->role == 'Admin' ? 'primary' : 'secondary') }} bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
+                                <i class="bi bi-person-fill fs-1 text-{{ auth()->user()->role == 'Superadmin' ? 'danger' : (auth()->user()->role == 'Admin' ? 'primary' : 'secondary') }}"></i>
                             </div>
                         @endif
                     </div>
                     <h4>{{ auth()->user()->name }}</h4>
                     <p class="text-muted">{{ auth()->user()->email }}</p>
                     @switch(auth()->user()->role)
-                        @case('SuperAdmin')
-                            <span class="badge bg-danger">SuperAdmin</span>
+                        @case('Superadmin')
+                            <span class="badge bg-danger">Superadmin</span>
                             @break
                         @case('Admin')
                             <span class="badge bg-primary">Admin</span>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="card-footer bg-transparent">
                     <div class="d-flex flex-column gap-2">
-                        <a href="{{ route('home') }}" class="btn btn-outline-primary">
+                        <a href="{{ auth()->user()->role=='Superadmin' ? route('admin.dashboard') : route('dashboard') }}" class="btn btn-outline-primary">
                             <i class="bi bi-house me-2"></i>Back to Dashboard
                         </a>
                     </div>

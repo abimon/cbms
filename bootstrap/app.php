@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         'isAdmin'=> App\Http\Middleware\isAdmin::class,
         'isNotGuest' => App\Http\Middleware\isNotGuest::class,
         'isVerified' => App\Http\Middleware\isVerified::class,
+        'isSuperadmin' => App\Http\Middleware\isSuperadmin::class,
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
