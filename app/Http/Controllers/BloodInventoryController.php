@@ -58,10 +58,10 @@ class BloodInventoryController extends Controller
                     }
                 }
             }
-            array_push($data, ['group' => $bloodgroup . '-', 'units' => $neg]);
-            array_push($data, ['group' => $bloodgroup . '+', 'units' => $pos]);
+            array_push($data, ['group' => $bloodgroup . '-', 'units' => $neg,'rhesus'=>'Negative','type'=>$bloodgroup]);
+            array_push($data, ['group' => $bloodgroup . '+', 'units' => $pos,'rhesus'=>'Positive','type'=>$bloodgroup]);
         }
-        array_push($data, ['group' => 'NT', 'units' => $nt]);
+        array_push($data, ['group' => 'NT', 'units' => $nt,'rhesus'=>'NT','type'=>'NT']);
         return response()->json(['data' => $data]);
     }
 
