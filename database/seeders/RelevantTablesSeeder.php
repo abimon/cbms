@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BloodBank;
 use App\Models\BloodInventory;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -37,7 +38,7 @@ class RelevantTablesSeeder extends Seeder
         Schema::enableForeignKeyConstraints();
 
         User::factory(100)->create();
-        BloodInventory::factory(100)->create();
+        
         $userIds = User::pluck('id')->all();
 
         $bankRows = [];

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BloodBank;
 use App\Models\BloodInventory;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,18 +18,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' =>'Edimon A. O',
-            'email' => 'eabimon@gmail.com',
-            'phone' => '0701583807',
-            'avatar' => null,
-            'is_verified' => true,
-            'role' => 'Superadmin',
-            'is_admin' => true,
-            'email_verified_at' => now(),
-            'password' =>  Hash::make('Admin@1234'),
-        ]);
-        BloodInventory::factory(19)->create();
-        $this->call(\Database\Seeders\RelevantTablesSeeder::class);
+        // User::create([
+        //     'name' =>'Edimon A. O',
+        //     'email' => 'eabimon@gmail.com',
+        //     'phone' => '0701583807',
+        //     'avatar' => null,
+        //     'is_verified' => true,
+        //     'role' => 'Superadmin',
+        //     'is_admin' => true,
+        //     'email_verified_at' => now(),
+        //     'password' =>  Hash::make('Admin@1234'),
+        // ]);
+        // BloodInventory::factory(19)->create();
+        // $this->call(\Database\Seeders\RelevantTablesSeeder::class);
+        foreach (BloodBank::all() as $key => $bank) {
+            for ($i = 0; $i < 30; $i++) {
+                BloodInventory::create([
+                    'din' => fake()->unique()->numerify('DIN-KE-26-####'),
+                    'type' => fake()->randomElement(['Whole Blood', 'Platelet', 'Plasma']),
+                    'volume' => fake()->randomFloat(1, 1.0, 3.0),
+                    'blood_type' => fake()->randomElement(['A', 'B', 'AB', 'O']),
+                    'rhesus' => fake()->randomElement(['Positive', 'Negative']),
+                    'date_collected' => fake()->dateTimeBetween('-3 month', 'now'),
+                    'location' => fake()->city(),
+                    'collection_agency' => fake()->company(),
+                    'HIV' => fake()->randomElement(['Positive', 'Negative']),
+                    'HBV' => fake()->randomElement(['Positive', 'Negative']),
+                    'HCV' => fake()->randomElement(['Positive', 'Negative']),
+                    'Syphilis' => fake()->randomElement(['Positive', 'Negative']),
+                    'Malaria' => fake()->randomElement(['Positive', 'Negative']),
+                    'expiry_date' => fake()->dateTimeBetween('+2 months', '+5 months'),
+                    'release_date' => fake()->dateTimeBetween('-5 months', 'now'),
+                    'status' => fake()->randomElement(['available', 'used', 'withdrawn']),
+                ]);
+            }
+        }
     }
 }
