@@ -66,7 +66,7 @@
                             </div>
                             <div class="col-8">
                                 <div class="progress {{ $level<50?'bg-danger':($level<75?'bg-warning':'bg-success') }}" role="progressbar" aria-label="Animated striped example" aria-valuenow="{{$level}} " aria-valuemin="0" aria-valuemax="100">
-                                    <div class="progress-bar bg-success" style="width: <?php $level ?>%">{{ $level?$level.'%':''}}</div>
+                                    <div class="progress-bar bg-success" style="width: <?php echo $level ?>%">{{ $level?$level.'%':''}}</div>
                                 </div>
                             </div>
                         </div>

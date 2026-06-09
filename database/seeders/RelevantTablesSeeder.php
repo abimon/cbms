@@ -17,7 +17,7 @@ class RelevantTablesSeeder extends Seeder
 
     public function run(): void
     {
-        $faker = \Faker\Factory::create('en_US');
+        $faker = \Faker\Factory::create('en_K');
         $faker->seed(1234);
 
         Schema::disableForeignKeyConstraints();

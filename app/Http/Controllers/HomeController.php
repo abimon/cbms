@@ -46,7 +46,7 @@ class HomeController extends Controller
                         $errors[] = $message;
                     }
                  };
-                if ($threshold->blood_group == $type . '+' && $bp < $threshold->threshold) {
+                if ($threshold->blood_group == $type . '+' && $bp < 0.5 * ($threshold->threshold)) {
                     $message = "Blood group $type+ is below threshold  with quantity $bp pints.";
                     if (!in_array($message, $errors)) {
                         $errors[] = $message;
