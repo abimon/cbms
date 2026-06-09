@@ -37,7 +37,7 @@ class BloodInventoryController extends Controller
     {
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
-        return $id;
+        // return $id;
         $bank= BloodBank::findOrFail($id);
         if(!$bank){
             return response()->json(['message' => 'Bank not found'],404);
