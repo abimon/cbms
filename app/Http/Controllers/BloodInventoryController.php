@@ -51,11 +51,11 @@ class BloodInventoryController extends Controller
             foreach ($blood as $bag) {
                 if (in_array($bag->status, $status)) {
                     if ($bag->rhesus == 'Negative') {
-                        $neg += $bag->volume;
+                        $neg += round($bag->volume, 1);
                     } else if ($bag->rhesus == 'Positive') {
-                        $pos += $bag->volume;
+                        $pos += round($bag->volume, 1);
                     } else {
-                        $nt += $bag->volume;
+                        $nt += round($bag->volume, 1);
                     }
                 }
             }
@@ -306,7 +306,7 @@ class BloodInventoryController extends Controller
         $bank = BloodBank::findOrFail(request('bank_id'));
         $bloodType = request('blood_type');
         $bloodGroup = preg_split('/(?=[+-])/', $bloodType);;
-        $bloodInventories = BloodInventory::where([['blood_type',$bloodGroup[0] ],['rhesus',$bloodGroup[1] ], ['collection_agency', $bank->name]])->get();
+        $bloodInventories = BloodInventory::where([['blood_type', $bloodGroup[0]], ['rhesus', $bloodGroup[1]], ['collection_agency', $bank->name]])->get();
         if (request()->is('api/*')) {
             return response()->json(['data' => $bloodInventories]);
         } else {
