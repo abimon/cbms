@@ -37,7 +37,6 @@ class BloodInventoryController extends Controller
     {
         $bloodgroups = ['A', 'B', 'AB', 'O'];
         $data = [];
-        // return $id;
         $bank = BloodBank::findOrFail($id);
         if (!$bank) {
             return response()->json(['message' => 'Bank not found'], 404);
@@ -305,7 +304,8 @@ class BloodInventoryController extends Controller
     {
         $bank = BloodBank::findOrFail(request('bank_id'));
         $bloodType = request('blood_type');
-        $bloodGroup = preg_split('/(?=[+-])/', $bloodType);;
+        $bloodGroup = preg_split('/(?=[+-])/', $bloodType);
+        return $bloodGroup;
         $bloodInventories = BloodInventory::where([['blood_type', $bloodGroup[0]], ['rhesus', $bloodGroup[1]], ['collection_agency', $bank->name]])->get();
         if (request()->is('api/*')) {
             return response()->json(['data' => $bloodInventories]);
