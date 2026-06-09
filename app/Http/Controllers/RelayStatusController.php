@@ -62,10 +62,10 @@ class RelayStatusController extends Controller
                 'message'=>'Response time has expired'
             ],400);
         }
-        return [$relayStatus->relay_id,$relayStatus->status];
+        return [$relayStatus->relay_id,$relayStatus->status,$relayStatus->id];
     }
     public function updateStatus(){
-        $relayStatus = RelayStatus::where('code',request('code'))->first();
+        $relayStatus = RelayStatus::findOrFail(request('id'));
         $relayStatus->update([
             'isDone'=>true
         ]);
