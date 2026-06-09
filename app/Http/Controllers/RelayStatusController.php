@@ -65,8 +65,8 @@ class RelayStatusController extends Controller
         $id= $relayStatus->id;
         return [$relayStatus->relay_id,$relayStatus->status,''.$id.''];
     }
-    public function updateStatus(){
-        $relayStatus = RelayStatus::findOrFail(request('id'));
+    public function updateStatus($id){
+        $relayStatus = RelayStatus::findOrFail($id);
         $relayStatus->update([
             'isDone'=>true
         ]);

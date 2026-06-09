@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BloodBank;
 use App\Models\BloodRequest;
+use Illuminate\Support\Facades\Http;
 
 class BloodRequestController extends Controller
 {
@@ -48,7 +49,12 @@ class BloodRequestController extends Controller
             'donor_hospital'=>'nullable|string',
             'reason' => 'nullable|string',
         ]);
+        $validated['donor_hospital']=
         BloodRequest::create($validated);
+        $message = 'New blood request received for ' . $validated['blood_type'] . ' with quantity ' . $validated['quantity'] . ' pints. Please review and take necessary action.';
+        $phone  = '0701583806';
+        Http::get('https://cbms.apetechinc.com/sendSms/' . $phone . '/' . $message);
+
         if(request()->is('api/*')){
             return response()->json(['message' => 'Blood request created successfully.'], 201);
         }else{

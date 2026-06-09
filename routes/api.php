@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(RelayStatusController::class)->group(function () {
     Route::get('/get-pending-command', 'actuate');
-    Route::get('/confirm-relay', 'actuate');
+    Route::get('/confirm-relay/{id}', 'actuate');
     Route::post('/relay-status/store','store')->middleware('auth:sanctum');
 });
 Route::middleware(['auth:sanctum', 'verified', 'isVerified'])->group(function () {
