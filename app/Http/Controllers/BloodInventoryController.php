@@ -117,7 +117,7 @@ class BloodInventoryController extends Controller
                 }
                 return back()->withErrors($val)->withInput();
             }
-            $user = User_bank::where([['user_id', Auth::id()], ['bank_id', BloodBank::where('name', request('collection_agency'))->first()->id], ['status', 'approved']])->firstOrFail();
+            $user = User_bank::where([['user_id', Auth::id()], ['bank_id',  request('collection_agency')], ['status', 'approved']])->firstOrFail();
             if (!$user) {
                 if (request()->is('api/*')) {
                     return response()->json(['message' => 'You are not associated to this collection agency'], 404);
@@ -127,6 +127,7 @@ class BloodInventoryController extends Controller
             // add 35 days to date collected
             $val['expiry_date'] = date('Y-m-d', strtotime($val['date_collected'] . ' + 35 days'));
             $val['status'] = request('status') ?? 'not_tested';
+            $val['collection_agency'] = BloodBank::findOrFail(request('collection_agency'))->name;
             $inv = BloodInventory::create($val);
             BloodStorage::create([
                 'bloodbag_id' => $inv->id,
