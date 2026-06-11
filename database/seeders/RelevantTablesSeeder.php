@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\BloodBank;
+// use App\Models\BloodBank;
 use App\Models\BloodInventory;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,7 +17,7 @@ class RelevantTablesSeeder extends Seeder
 
     public function run(): void
     {
-        $faker = \Faker\Factory::create('en_K');
+        $faker = \Faker\Factory::create('en_KE');
         $faker->seed(1234);
 
         Schema::disableForeignKeyConstraints();
@@ -68,7 +68,7 @@ class RelevantTablesSeeder extends Seeder
         $this->seedUserBanks($faker, $userIds, $bankIds);
         $this->seedBloodStorages($faker, $inventoryIds, $bankIds);
         $this->seedWithdrawals($faker, $userIds, $inventoryIds, $bankIds);
-        $this->seedBagTimelines($faker, $userIds, $inventoryIds);
+        // $this->seedBagTimelines($faker, $userIds, $inventoryIds);
         $this->seedActivities($faker, $userIds);
         $this->seedRelayStatuses($faker);
         $this->seedBloodRequests($faker);
@@ -159,32 +159,32 @@ class RelevantTablesSeeder extends Seeder
         DB::table('withdrawals')->insert($withdrawalRows);
     }
 
-    private function seedBagTimelines($faker, array $userIds, array $inventoryIds): void
-    {
-        $timelineRows = [];
-        $pairs = [];
+    // private function seedBagTimelines($faker, array $userIds, array $inventoryIds): void
+    // {
+    //     $timelineRows = [];
+    //     $pairs = [];
 
-        while (count($timelineRows) < 100) {
-            $bagId = Arr::random($inventoryIds);
-            $userId = Arr::random($userIds);
-            $key = "$bagId-$userId";
+    //     while (count($timelineRows) < 100) {
+    //         $bagId = Arr::random($inventoryIds);
+    //         $userId = Arr::random($userIds);
+    //         $key = "$bagId-$userId";
 
-            if (isset($pairs[$key])) {
-                continue;
-            }
+    //         if (isset($pairs[$key])) {
+    //             continue;
+    //         }
 
-            $pairs[$key] = true;
-            $timelineRows[] = [
-                'bag_id' => $bagId,
-                'user_id' => $userId,
-                'description' => $faker->unique()->sentence(10),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
+    //         $pairs[$key] = true;
+    //         $timelineRows[] = [
+    //             'bag_id' => $bagId,
+    //             'user_id' => $userId,
+    //             'description' => $faker->unique()->sentence(10),
+    //             'created_at' => now(),
+    //             'updated_at' => now(),
+    //         ];
+    //     }
 
-        DB::table('bag_timelines')->insert($timelineRows);
-    }
+    //     DB::table('bag_timelines')->insert($timelineRows);
+    // }
 
     private function seedActivities($faker, array $userIds): void
     {

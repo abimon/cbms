@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BagTimeline;
 use App\Models\BloodBank;
 use App\Models\BloodInventory;
 use App\Models\User;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' =>'Edimon A. O',
+            'name' => 'Edimon A. O',
             'email' => 'eabimon@gmail.com',
             'phone' => '0701583807',
             'avatar' => null,
@@ -30,11 +31,41 @@ class DatabaseSeeder extends Seeder
             'password' =>  Hash::make('Admin@1234'),
         ]);
         BloodInventory::factory(19)->create();
+        foreach(BloodInventory::all() as $bag){
+            if ($bag->status == 'available') {
+                BagTimeline::create([
+                    'bag_id' => $bag->id,
+                    'user_id' => 1,
+                    'description' => 'Blood bag received.',
+                ]);
+                BagTimeline::create([
+                    'bag_id' => $bag->id,
+                    'user_id' => 1,
+                    'description' => 'Blood bag completed testing.',
+                ]);
+            } else {
+                BagTimeline::create([
+                    'bag_id' => $bag->id,
+                    'user_id' => 1,
+                    'description' => 'Blood bag received.',
+                ]);
+                BagTimeline::create([
+                    'bag_id' => $bag->id,
+                    'user_id' => 1,
+                    'description' => 'Blood bag completed testing.',
+                ]);
+                BagTimeline::create([
+                    'bag_id' => $bag->id,
+                    'user_id' => 1,
+                    'description' => 'Blood bag ' . $bag->status . '.',
+                ]);
+            }
+        }
         $this->call(\Database\Seeders\RelevantTablesSeeder::class);
         foreach (BloodBank::all() as $key => $bank) {
 
             for ($i = 0; $i < 30; $i++) {
-                BloodInventory::create([
+                $bag = BloodInventory::create([
                     'din' => 'DIN-KE-26-' . ($key < 10 ? '0' . ($key + 1) : ($key + 1)) . '-' . ($i < 10 ? '0' . ($i + 1) : ($i + 1)),
                     'type' => fake()->randomElement(['Whole Blood', 'Platelet', 'Plasma']),
                     'volume' => fake()->randomFloat(1, 1, 3),
@@ -50,8 +81,37 @@ class DatabaseSeeder extends Seeder
                     'Malaria' => fake()->randomElement(['Positive', 'Negative']),
                     'expiry_date' => fake()->dateTimeBetween('+2 months', '+5 months'),
                     'release_date' => fake()->dateTimeBetween('-5 months', 'now'),
-                    'status' => fake()->randomElement(['available', 'used','withdrawn']),
+                    'status' => fake()->randomElement(['available', 'used', 'withdrawn']),
                 ]);
+                if ($bag->status == 'available') {
+                    BagTimeline::create([
+                        'bag_id' => $bag->id,
+                        'user_id' => 1,
+                        'description' => 'Blood bag received.',
+                    ]);
+                    BagTimeline::create([
+                        'bag_id' => $bag->id,
+                        'user_id' => 1,
+                        'description' => 'Blood bag completed testing.',
+                    ]);
+                } else {
+                    BagTimeline::create([
+                        'bag_id' => $bag->id,
+                        'user_id' => 1,
+                        'description' => 'Blood bag received.',
+                    ]);
+                    BagTimeline::create([
+                        'bag_id' => $bag->id,
+                        'user_id' => 1,
+                        'description' => 'Blood bag completed testing.',
+                    ]);
+                    BagTimeline::create([
+                        'bag_id' => $bag->id,
+                        'user_id' => 1,
+                        'description' => 'Blood bag '.$bag->status.'.',
+                    ]);
+
+                }
             }
         }
     }
